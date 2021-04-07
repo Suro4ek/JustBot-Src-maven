@@ -1,0 +1,47 @@
+package ru.rien.bot.permission;
+
+import com.google.common.collect.Sets;
+
+import java.util.Set;
+
+public class User {
+
+    private final Set<String> groups = Sets.newConcurrentHashSet();
+    private final Set<String> permissions = Sets.newConcurrentHashSet();
+
+    public Set<String> getGroups() {
+        return groups;
+    }
+
+    public boolean addGroup(Group group) {
+        return groups.add(group.getName());
+    }
+
+    public boolean removeGroup(Group group) {
+        return groups.remove(group.getName());
+    }
+
+    public Set<String> getPermissions() {
+        return permissions;
+    }
+
+    public Permission.Reply hasPermission(Permission permission) {
+        for (String s : permissions) {
+            boolean hasPermission =
+                    new PermissionNode(s.substring(s.startsWith("-") ? 1 : 0)).test(permission.getPermission());
+            if (s.startsWith("-") && hasPermission)
+                return Permission.Reply.DENY;
+            if (hasPermission)
+                return Permission.Reply.ALLOW;
+        }
+        return Permission.Reply.NEUTRAL;
+    }
+
+    public boolean addPermission(String permission) {
+        return permissions.add(permission);
+    }
+
+    public boolean removePermission(String permission) {
+        return permissions.remove(permission);
+    }
+}
