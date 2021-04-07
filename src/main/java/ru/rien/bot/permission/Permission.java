@@ -106,6 +106,9 @@ public enum Permission {
     ROLL_COMMAND("roll", true),
     // Разное
     URLSHOT_COMMAND("urlshot", true),
+    QRCODE_COMMAND("qrcode",true),
+    PNG_COMAMND("png",true),
+    SKIN_COMMAND("skin",true),
     AVATAR_COMMAND("avatar", true),
     LANG_COMMAND("lang", true),
     AVATAR_OTHER("avatar.other", false),

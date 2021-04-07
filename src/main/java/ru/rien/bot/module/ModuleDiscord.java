@@ -16,6 +16,8 @@ import net.dv8tion.jda.api.events.user.update.UserUpdateOnlineStatusEvent;
 import net.dv8tion.jda.api.hooks.EventListener;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import ru.rien.bot.modules.command.Command;
+import ru.rien.bot.modules.command.ModuleCommand;
 import ru.rien.bot.modules.dsBot.ModuleDsBot;
 
 import javax.annotation.Nonnull;
@@ -40,6 +42,10 @@ public abstract class ModuleDiscord extends CommonModule implements EventListene
 
     public void registerListener(EventListener eventListener){
         moduleDsBot.getJda().addEventListener(eventListener);
+    }
+
+    public void registerCommand(Command command){
+        ModuleCommand.getCommands().add(command);
     }
 
     public void onGuildMessageReceived(@Nonnull GuildMessageReceivedEvent event) {

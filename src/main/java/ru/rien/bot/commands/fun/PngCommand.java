@@ -1,6 +1,6 @@
 package ru.rien.bot.commands.fun;
 
-import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import org.springframework.stereotype.Component;
 import ru.rien.bot.modules.command.Command;
 import ru.rien.bot.modules.command.CommandEvent;
@@ -10,31 +10,38 @@ import ru.rien.bot.permission.Permission;
 import ru.rien.bot.utils.MessageUtils;
 
 @Component
-public class SkinCommand implements Command {
+public class PngCommand implements Command {
+
     @Override
     public void execute(CommandEvent event) {
         event.checkSizeArguments(1);
-        String name = event.getArgs()[0];
-        EmbedBuilder e = MessageUtils.getEmbed();
-        e.setTitle("Скин игрока " + name, "https://minotar.net/download/" + name);
-        e.setImage("https://minotar.net/armor/body/" + name+ "/300.png");
-        e.setThumbnail("https://minotar.net/cube/" + name + "/500.png");
-        event.getChannel().sendMessage(e.build()).queue();
+        String[] args = event.getArgs();
+        StringBuilder done = new StringBuilder();
+
+        for (int i = 0; i < args.length; i++) {
+            done.append("+").append(args[i]);
+        }
+
+        MessageEmbed embed =
+                MessageUtils.getEmbed().setImage("https://dummyimage.com/1000x395/417426.png/FFA718/&text=" + done)
+                .build();
+        event.getChannel().sendMessage(embed).queue();
+
     }
 
     @Override
     public String getCommand() {
-        return "skin";
+        return "png";
     }
 
     @Override
     public String getDescription(GuildWrapper guildWrapper) {
-        return "получить скин игрока из mojang";
+        return "получить png картинку с текстом";
     }
 
     @Override
     public String getUsage(GuildWrapper guildWrapper) {
-        return "{%}skin [ник игрока] - скин игрока из mojang";
+        return "{%}png [текст...] - получить png картинку с текстом";
     }
 
     @Override
@@ -44,6 +51,6 @@ public class SkinCommand implements Command {
 
     @Override
     public Permission getPermission() {
-        return Permission.SKIN_COMMAND;
+        return Permission.PNG_COMAMND;
     }
 }

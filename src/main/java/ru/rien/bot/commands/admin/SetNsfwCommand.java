@@ -24,7 +24,6 @@ public class SetNsfwCommand implements Command {
         channel.sendMessage(MessageUtils.getEmbed(sender)
                 .setDescription(Language.getLanguage(0).getMessage("ADMIN_SET_NSFW")).build())
                 .queue();
-        System.out.println(Language.getLanguage(0).getMessage("ADMIN_SET_NSFW"));
     }
 
     @Override
