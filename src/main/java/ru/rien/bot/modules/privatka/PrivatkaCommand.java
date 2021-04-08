@@ -29,8 +29,8 @@ public class PrivatkaCommand implements Command {
                 if(guildEntity.getCreate_channel_id() == 0 && guildEntity.getCategory_id() == 0){
                     guild.getGuild().createCategory("Приватки").queue(category -> {
                         category.createVoiceChannel("Создание приваток").queue(voiceChannel -> {
-                            guildEntity.setCreate_channel_id(voiceChannel.getIdLong());
-                            guildEntity.setCategory_id(category.getIdLong());
+                            guild.setCreeate_voice_channel(voiceChannel.getIdLong());
+                            guild.setCaterogy_id(category.getIdLong());
                         });
                     });
                 }else{
@@ -40,8 +40,8 @@ public class PrivatkaCommand implements Command {
                     }
                     guild.getGuild().createCategory("Приватки").queue(category -> {
                         category.createVoiceChannel("Создание приваток").queue(voiceChannel -> {
-                            guildEntity.setCreate_channel_id(voiceChannel.getIdLong());
-                            guildEntity.setCategory_id(category.getIdLong());
+                            guild.setCreeate_voice_channel(voiceChannel.getIdLong());
+                            guild.setCaterogy_id(category.getIdLong());
                         });
                     });
                 }

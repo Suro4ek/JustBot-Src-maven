@@ -102,6 +102,7 @@ public enum Permission {
     PANDA_COMMAND("panda", true),
     SEAL_COMMAND("seal", true),
     GIF_COMMAND("gif", true),
+    FLIP_COMMAND("flip",true),
     KPOP_COMMAND("kpop", true),
     ROLL_COMMAND("roll", true),
     // Разное

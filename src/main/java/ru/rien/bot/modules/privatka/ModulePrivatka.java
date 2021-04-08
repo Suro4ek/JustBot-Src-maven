@@ -17,7 +17,6 @@ import java.util.List;
 @Component
 public class ModulePrivatka extends ModuleDiscord {
 
-    private final ModuleDsBot moduleDsBot = this.getModuleDsBot();
     private final PrivatkaService privatkaService;
     public ModulePrivatka(PrivatkaService privatkaService) {
         super("privatka", false);
@@ -33,7 +32,7 @@ public class ModulePrivatka extends ModuleDiscord {
 
     @Override
     public void onGuildVoiceJoin(@NotNull GuildVoiceJoinEvent event) {
-        GuildWrapper guildWrapper = moduleDsBot.getManager().getGuild(event.getGuild().getId());
+        GuildWrapper guildWrapper = getModuleDsBot().getManager().getGuild(event.getGuild().getId());
         if(guildWrapper.getGuildEntity().getCategory_id() != 0 && guildWrapper.getGuildEntity().getCreate_channel_id() != 0){
             GuildChannel guildChannel = guildWrapper.getGuild().getGuildChannelById(guildWrapper.getGuildEntity().getCreate_channel_id());
             if(guildChannel != null){
@@ -53,7 +52,7 @@ public class ModulePrivatka extends ModuleDiscord {
 
     @Override
     public void onGuildVoiceLeave(@NotNull GuildVoiceLeaveEvent event) {
-        GuildWrapper guildWrapper = moduleDsBot.getManager().getGuild(event.getGuild().getId());
+        GuildWrapper guildWrapper = getModuleDsBot().getManager().getGuild(event.getGuild().getId());
         if(guildWrapper.getGuildEntity().getCategory_id() != 0 && guildWrapper.getGuildEntity().getCreate_channel_id() != 0){
             Category category = event.getGuild().getCategoryById(guildWrapper.getGuildEntity().getCategory_id());
             if (category != null) {
@@ -71,7 +70,7 @@ public class ModulePrivatka extends ModuleDiscord {
 
     @Override
     public void onGuildVoiceMove(@NotNull GuildVoiceMoveEvent event) {
-        GuildWrapper guildWrapper = moduleDsBot.getManager().getGuild(event.getGuild().getId());
+        GuildWrapper guildWrapper = getModuleDsBot().getManager().getGuild(event.getGuild().getId());
         if(guildWrapper.getGuildEntity().getCategory_id() != 0 && guildWrapper.getGuildEntity().getCreate_channel_id() != 0){
             Category category = event.getGuild().getCategoryById(guildWrapper.getGuildEntity().getCategory_id());
             if (category != null) {
@@ -100,7 +99,7 @@ public class ModulePrivatka extends ModuleDiscord {
     public void clear(){
         List<PrivatkaEntity> privatkaEntities = privatkaService.findAll();
         privatkaEntities.forEach(privatkaEntity -> {
-            Guild guild = moduleDsBot.getJda().getGuildById(privatkaEntity.getGuildEntity().getGuildid());
+            Guild guild = getModuleDsBot().getJda().getGuildById(privatkaEntity.getGuildEntity().getGuildid());
             if(guild != null){
                 GuildChannel guildChannel = guild.getGuildChannelById(privatkaEntity.getVchannelid());
                 if(guildChannel != null){

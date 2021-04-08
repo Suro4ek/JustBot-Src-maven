@@ -27,6 +27,8 @@ public class GuildWrapper {
     private PerGuildPermissions permissions = new PerGuildPermissions();
     private Set<String> autoAssignRoles = new HashSet<>();
     private Set<String> selfAssignRoles = new HashSet<>();
+    private long caterogy_id = 0;
+    private long creeate_voice_channel = 0;
     private boolean songnick = false;
     private Long nswf = null;
     // Should be moved to their own manager.
@@ -257,6 +259,8 @@ public class GuildWrapper {
         this.guildEntity.setPrefix(prefix);
     }
 
+
+
     public String getMusicAnnounceChannelId() {
         return musicAnnounceChannelId;
     }
@@ -265,7 +269,17 @@ public class GuildWrapper {
         this.musicAnnounceChannelId = musicAnnounceChannelId;
     }
 
-//    public NINO getNINO() {
+    public void setCaterogy_id(long caterogy_id) {
+        this.caterogy_id = caterogy_id;
+        this.guildEntity.setCategory_id(caterogy_id);
+    }
+
+    public void setCreeate_voice_channel(long creeate_voice_channel) {
+        this.creeate_voice_channel = creeate_voice_channel;
+        this.guildEntity.setCreate_channel_id(creeate_voice_channel);
+    }
+
+    //    public NINO getNINO() {
 //        if (nino == null)
 //            nino = new NINO();
 //        return nino;
