@@ -10,6 +10,7 @@ public enum CommandType {
     NSWF("Hmm",true),
     ADMIN("Админ",false),
     MUSIC("Музыкальные",true),
+    MODERATION("Модерация", false),
     INFORMATIONAL("Информационные",false);
 
     private static final CommandType[] values = values();

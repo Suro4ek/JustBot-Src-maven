@@ -19,9 +19,9 @@ public class FlipCommand implements Command {
         float rand = random.nextFloat();
         TextChannel textChannel = event.getChannel();
         if(rand > 0.5){
-            MessageUtils.sendMessage("Орел", textChannel);
+            MessageUtils.sendInfoMessage("Орел", textChannel, event.getSender());
         }else{
-            MessageUtils.sendMessage("Решка", textChannel);
+            MessageUtils.sendInfoMessage("Решка", textChannel, event.getSender());
         }
     }
 

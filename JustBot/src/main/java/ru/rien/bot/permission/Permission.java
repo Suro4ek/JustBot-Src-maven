@@ -94,6 +94,7 @@ public enum Permission {
     BIRD_COMMAND("bird",true),
     CAMEL_COMMAND("camel", true),
     HENTAI_COMMAND("hentai", true),
+    YAOI_COMMAND("yaou", true),
     DOG_COMMAND("dog", true),
     DUCK_COMMAND("duck", true),
     FOX_COMMAND("duck", true),

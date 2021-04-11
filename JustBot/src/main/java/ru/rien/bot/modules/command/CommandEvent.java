@@ -73,6 +73,13 @@ public class CommandEvent {
         return args;
     }
 
+    public int getInt(String arg) throws CommandException {
+        try {
+            return Integer.parseInt(arg);
+        } catch (Exception e) {
+            return 0;
+        }
+    }
     /**
      * Является ли аргумент по индексу name
      *

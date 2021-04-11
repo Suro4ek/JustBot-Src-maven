@@ -21,7 +21,7 @@ public class BirdCommand implements Command {
     public void execute(CommandEvent event) {
         try {
             HttpResponse<JsonNode> response = Unirest.get("https://some-random-api.ml/img/birb").asJson();
-            MessageEmbed embed = MessageUtils.getEmbed().
+            MessageEmbed embed = MessageUtils.getEmbed(event.getSender()).
                     setImage(response.getBody().getObject().getString("link"))
                     .build();
             event.getChannel().sendMessage(embed).queue();
