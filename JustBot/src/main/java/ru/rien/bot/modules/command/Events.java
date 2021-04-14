@@ -3,11 +3,19 @@ package ru.rien.bot.modules.command;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageReaction;
+import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
+import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
+import net.dv8tion.jda.api.events.guild.member.GuildMemberLeaveEvent;
+import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
+import ru.rien.bot.modules.dsBot.JustBotManager;
+import ru.rien.bot.objects.GuildWrapper;
+import ru.rien.bot.permission.Group;
 import ru.rien.bot.utils.buttons.ButtonUtil;
 import ru.rien.bot.utils.objects.ButtonGroup;
 
@@ -15,7 +23,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Component
 public class Events extends ListenerAdapter {
 
     private Map<Long, Double> maxButtonClicksPerSec = new HashMap<>();
@@ -67,6 +74,29 @@ public class Events extends ListenerAdapter {
                 }
             }
         }
+    }
+
+    @Override
+    public void onGuildMemberRemove(@NotNull GuildMemberRemoveEvent event) {
+        super.onGuildMemberRemove(event);
+    }
+
+    @Override
+    public void onGuildMemberJoin(@NotNull GuildMemberJoinEvent event) {
+        GuildWrapper guildWrapper = JustBotManager.instance().getGuild(event.getGuild().getId());
+
+        guildWrapper.getPermissions().getGroups().forEach(group -> {
+            System.out.println(group.getName());
+            System.out.println(group.isDef());
+        });
+        guildWrapper.getPermissions().getGroups().stream().filter(Group::isDef)
+                .forEach(group -> {
+                    System.out.println(group.getName());
+                    Role role = event.getGuild().getRoleById(group.getRoleId());
+                    if(role != null)
+                        event.getGuild().addRoleToMember(event.getMember(),
+                                role).queue();
+                });
     }
 
     public Map<Long, Double> getMaxButtonClicksPerSec() {

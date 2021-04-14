@@ -3,6 +3,7 @@ package ru.rien.bot.modules.dsBot;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.requests.GatewayIntent;
 import okhttp3.ConnectionPool;
 import okhttp3.OkHttpClient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +55,7 @@ public class ModuleDsBot extends CommonModule {
         builder.setBulkDeleteSplittingEnabled(false);
         // Set activity (like "playing Something")
         builder.setActivity(Activity.watching("_prefix"));
-
+        builder.enableIntents(GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_MEMBERS);
         builder.setLargeThreshold(50);
         try {
             jda = builder.build().awaitReady();
@@ -66,7 +67,6 @@ public class ModuleDsBot extends CommonModule {
         } catch (LoginException | InterruptedException | UnknownBindingException e) {
             e.printStackTrace();
         }
-
     }
 
     @Override

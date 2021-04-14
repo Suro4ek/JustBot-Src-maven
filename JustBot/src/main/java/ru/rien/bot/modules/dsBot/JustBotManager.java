@@ -81,6 +81,7 @@ public class JustBotManager {
                 }
                 groupEntity.setGuildEntity(guildEntity);
                 groupEntity.setName(group.getName());
+                groupEntity.setDef(group.isDef());
                 groupEntity.setRole_id(Long.parseLong(group.getRoleId()));
                 groupEntity.setPermisisons(new ArrayList<>(group.getPermissions()));
                 guildService.savegroup(groupEntity);

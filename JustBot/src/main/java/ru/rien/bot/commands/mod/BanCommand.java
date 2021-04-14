@@ -1,7 +1,6 @@
 package ru.rien.bot.commands.mod;
 
 import net.dv8tion.jda.api.entities.User;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.rien.bot.modules.command.Command;
 import ru.rien.bot.modules.command.CommandEvent;
@@ -11,6 +10,7 @@ import ru.rien.bot.modules.punishment.ModulePunishment;
 import ru.rien.bot.objects.GuildWrapper;
 import ru.rien.bot.permission.Permission;
 import ru.rien.bot.utils.GuildUtils;
+import ru.rien.bot.utils.MessageUtils;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -34,14 +34,15 @@ public class BanCommand implements Command {
         User banned_by = event.getSender();
         String[] args = event.getArgs();
         GuildWrapper guild = event.getGuild();
+        event.checkSizeArguments(3);
         User banned = GuildUtils.getUser(args[1], guild.getGuildId());
         String cause = event.getArguments(3);
         String experies = args[2];
         long time = this.getTime(experies, event.getSender(), event);
         if (time >= 1L && time <= 315360000000L) {
             modulePunishment.ban(banned_by, banned, guild, cause, time);
+            MessageUtils.sendInfoMessage("Вы забанили " + banned.getName(),event.getChannel(),banned_by);
         }
-
     }
 
     private long getTime(String data, User sender, CommandEvent event) {

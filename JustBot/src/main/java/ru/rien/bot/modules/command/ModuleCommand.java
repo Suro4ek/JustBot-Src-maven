@@ -57,6 +57,8 @@ public class ModuleCommand extends ModuleDiscord {
         instance = this;
     }
 
+
+
     public static ModuleCommand getInstance() {
         return instance;
     }

@@ -36,7 +36,7 @@ public class ModulePunishment extends ModuleDiscord {
                     banservice.delete(banEntity);
                 });
             }
-        }.repeat(0, 1000*60);
+        }.repeat(0, 1000*600);
     }
 
     public void ban(User banned, User banned_by, GuildWrapper guildWrapper,String cause, long delaymilliseconds){

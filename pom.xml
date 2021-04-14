@@ -16,7 +16,7 @@
 	<groupId>ru.rien</groupId>
 	<artifactId>ru.rien.bot</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>ru.rien.bot</name>
+	<name>Bot</name>
 	<description>My JustBot</description>
 	<properties>
 		<java.version>1.8</java.version>

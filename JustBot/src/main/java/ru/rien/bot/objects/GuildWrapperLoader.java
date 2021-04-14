@@ -46,6 +46,7 @@ public class GuildWrapperLoader extends CacheLoader<String, GuildWrapper> {
                 if(wrapper.getPermissions().addGroup(groupEntity.getName())) {
                     Group group = wrapper.getPermissions().getGroup(groupEntity.getName());
                     group.setId(groupEntity.getId());
+                    group.setDef(groupEntity.isDef());
                     group.linkRole(String.valueOf(groupEntity.getRole_id()));
                     group.addPermission(groupEntity.getPermisisons());
                 }
