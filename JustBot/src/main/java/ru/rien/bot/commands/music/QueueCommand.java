@@ -108,7 +108,6 @@ public class QueueCommand implements Command {
                             track.getTrack().getInfo().title,
                             YouTubeExtractor.WATCH_URL + track.getTrack().getIdentifier(),
                             track.getMeta().get("requester"))));
-
             PagedEmbedBuilder pe = new PagedEmbedBuilder<>(PaginationUtil.splitStringToList(songs.stream()
                     // 21 for 10 per page. 2 new lines per song and 1 more because it's annoying
                     .collect(Collectors.joining("\n")) + "\n", PaginationUtil.SplitMethod.NEW_LINES, 21))

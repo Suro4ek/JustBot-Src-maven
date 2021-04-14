@@ -4,6 +4,7 @@ import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Service;
 import ru.rien.bot.entity.GroupEntity;
 import ru.rien.bot.entity.GuildEntity;
+import ru.rien.bot.objects.GuildWrapper;
 import ru.rien.bot.permission.Group;
 import ru.rien.bot.repository.GroupRepository;
 import ru.rien.bot.repository.GuildReposytory;
@@ -40,6 +41,14 @@ public class GuildService {
 
     public void saveGroups(GuildEntity guildEntity, List<Group> groups){
 
+    }
+
+
+    public void deleteGuild(GuildWrapper guildWrapper){
+        GuildEntity guildEntity = findById(guildWrapper.getGuildIdLong());
+        if(guildEntity != null){
+            guildReposytory.delete(guildEntity);
+        }
     }
 
     public void update(GuildEntity guildEntity,GuildEntity guildEntity1) {

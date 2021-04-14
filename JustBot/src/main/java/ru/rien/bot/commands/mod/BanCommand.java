@@ -36,7 +36,7 @@ public class BanCommand implements Command {
         GuildWrapper guild = event.getGuild();
         event.checkSizeArguments(3);
         User banned = GuildUtils.getUser(args[1], guild.getGuildId());
-        String cause = event.getArguments(3);
+        String cause = args[3];
         String experies = args[2];
         long time = this.getTime(experies, event.getSender(), event);
         if (time >= 1L && time <= 315360000000L) {

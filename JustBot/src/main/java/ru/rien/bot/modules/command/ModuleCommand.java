@@ -2,6 +2,7 @@ package ru.rien.bot.modules.command;
 
 import com.google.common.collect.Sets;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.guild.GenericGuildMessageEvent;
@@ -142,22 +143,27 @@ public class ModuleCommand extends ModuleDiscord {
      * @return If the user has permission to run the command, this will return <b>true</b> if they do NOT have permission.
      */
     private boolean handleMissingPermission(Command cmd,GuildWrapper guild, GuildMessageReceivedEvent e) {
-        if (cmd.getPermission() != null) {
-            if (!cmd.getPermissions(e.getChannel()).hasPermission(e.getMember(), cmd.getPermission())) {
-                MessageUtils.sendAutoDeletedMessage(MessageUtils.getEmbed(e.getAuthor()).setColor(Color.red)
-                                .setDescription(
-                                        guild.getMessage("NEED_PERMISSION",
-                                                cmd.getPermission())).build(), 5000,
-                        e.getChannel());
-                delete(e.getMessage());
-                return true;
+        Member member = e.getGuild().getMemberById(e.getAuthor().getIdLong());
+        if(member != null){
+            if (cmd.getPermission() != null) {
+                if (!cmd.getPermissions(e.getChannel()).hasPermission(member, cmd.getPermission())) {
+                    MessageUtils.sendAutoDeletedMessage(MessageUtils.getEmbed(e.getAuthor()).setColor(Color.red)
+                                    .setDescription(
+                                            guild.getMessage("NEED_PERMISSION",
+                                                    cmd.getPermission())).build(), 5000,
+                            e.getChannel());
+                    delete(e.getMessage());
+                    return true;
+                }
             }
-        }
 
-        return !cmd.getPermissions(e.getChannel()).hasPermission(
-                e.getMember(),
-                ru.rien.bot.permission.Permission.getPermission(cmd.getType())
-        ) && cmd.getPermission() == null;
+            return !cmd.getPermissions(e.getChannel()).hasPermission(
+                    member,
+                    ru.rien.bot.permission.Permission.getPermission(cmd.getType())
+            ) && cmd.getPermission() == null;
+        }else{
+            return true;
+        }
     }
 
 

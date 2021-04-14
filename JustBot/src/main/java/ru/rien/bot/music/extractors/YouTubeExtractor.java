@@ -36,6 +36,9 @@ public class YouTubeExtractor implements Extractor {
 
     @Override
     public void process(String input, Player player, Message message, User user) throws Exception {
+        if(player.getPlaylist().size()>200){
+            return;
+        }
         AudioItem item;
         try {
             item = GeneralUtils.resolveItem(player, input);
@@ -66,6 +69,7 @@ public class YouTubeExtractor implements Extractor {
         if (item instanceof AudioPlaylist) {
             AudioPlaylist audioPlaylist = (AudioPlaylist) item;
             audioTracks.addAll(audioPlaylist.getTracks());
+
             name = audioPlaylist.getName();
         } else {
             AudioTrack track = (AudioTrack) item;
@@ -81,11 +85,15 @@ public class YouTubeExtractor implements Extractor {
 ////                Constants.logEG("You can't rick roll me!", null, message.getGuild(), user);
 //            }
         }
+        if(audioTracks.size()>50){
+            return;
+        }
         if (name != null) {
             List<Track> tracks = audioTracks.stream().map(Track::new).peek(track -> {
                 track.getMeta().put("requester", user.getId());
                 track.getMeta().put("guildId", player.getGuildId());
             }).collect(Collectors.toList());
+
             if (tracks.size() > 1) { // Double `if` https://giphy.com/gifs/ng1xAzwIkDgfm
                 Playlist p = new Playlist(tracks);
                 player.queue(p);

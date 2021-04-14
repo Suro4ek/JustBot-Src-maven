@@ -2,6 +2,8 @@ package ru.rien.bot.module;
 
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.channel.voice.VoiceChannelDeleteEvent;
+import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
+import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
@@ -98,6 +100,15 @@ public abstract class ModuleDiscord extends CommonModule implements EventListene
 
     public void onUserUpdateOnlineStatus(@Nonnull UserUpdateOnlineStatusEvent event) {
     }
+
+    public void onGuildLeaveEvent(@NotNull GuildLeaveEvent event){
+
+    }
+
+    public void onGuildJoinEvent(@NotNull GuildJoinEvent event){
+
+    }
+
     @Override
     public void onEvent(@NotNull GenericEvent event) {
         if (event instanceof GuildMessageReceivedEvent) {
@@ -134,6 +145,10 @@ public abstract class ModuleDiscord extends CommonModule implements EventListene
             this.onGuildMessageReactionAdd((GuildMessageReactionAddEvent)event);
         }else if(event instanceof UserUpdateOnlineStatusEvent){
             this.onUserUpdateOnlineStatus((UserUpdateOnlineStatusEvent)event);
+        }else if(event instanceof GuildLeaveEvent){
+            this.onGuildLeaveEvent((GuildLeaveEvent) event);
+        }else if(event instanceof GuildJoinEvent){
+            this.onGuildJoinEvent((GuildJoinEvent) event);
         }
     }
 }
