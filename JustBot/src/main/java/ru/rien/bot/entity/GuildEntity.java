@@ -45,6 +45,12 @@ public class GuildEntity {
     @Column(name = "category_id", nullable = false)
     private long category_id = 0;
 
+    @Column(name = "stats")
+    private boolean stats = false;
+
+    @Column(name = "statsid")
+    private long statsid = 0;
+
     @Column(name = "create_channel_id", nullable = false)
     private long create_channel_id = 0;
 

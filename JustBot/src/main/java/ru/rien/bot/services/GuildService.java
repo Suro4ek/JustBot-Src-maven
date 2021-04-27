@@ -43,6 +43,9 @@ public class GuildService {
 
     }
 
+    public List<GuildEntity> findall(){
+        return guildReposytory.findAll();
+    }
 
     public void deleteGuild(GuildWrapper guildWrapper){
         GuildEntity guildEntity = findById(guildWrapper.getGuildIdLong());
@@ -57,6 +60,8 @@ public class GuildService {
         guildEntity1.setNswfid(guildEntity.getNswfid());
         guildEntity1.setCreate_channel_id(guildEntity.getCreate_channel_id());
         guildEntity1.setCategory_id(guildEntity.getCategory_id());
+        guildEntity1.setStatsid(guildEntity.getStatsid());
+        guildEntity1.setStats(guildEntity.isStats());
         guildReposytory.save(guildEntity1);
     }
 

@@ -135,6 +135,16 @@ public class GuildWrapper {
         unBlockTime = -1; //-1 represents both infinite and unblocked
     }
 
+    public void initstats(Long id){
+        this.guildEntity.setStats(true);
+        this.guildEntity.setStatsid(id);
+    }
+
+    public void removestats(Long id){
+        this.guildEntity.setStats(false);
+        this.guildEntity.setStatsid(0);
+    }
+
     public void addBlocked(String reason, long unBlockTime) {
         blocked = true;
         blockReason = reason;

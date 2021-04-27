@@ -109,6 +109,14 @@ public abstract class ModuleDiscord extends CommonModule implements EventListene
 
     }
 
+    public void onGuildMemberJoinEvent(@NotNull GuildMemberJoinEvent event){
+
+    }
+
+    public void onGuildMemberRemoveEvent(@NotNull GuildMemberRemoveEvent event){
+
+    }
+
     @Override
     public void onEvent(@NotNull GenericEvent event) {
         if (event instanceof GuildMessageReceivedEvent) {
@@ -149,6 +157,10 @@ public abstract class ModuleDiscord extends CommonModule implements EventListene
             this.onGuildLeaveEvent((GuildLeaveEvent) event);
         }else if(event instanceof GuildJoinEvent){
             this.onGuildJoinEvent((GuildJoinEvent) event);
+        }else if(event instanceof GuildMemberJoinEvent){
+            this.onGuildMemberJoinEvent((GuildMemberJoinEvent) event);
+        }else if(event instanceof GuildMemberRemoveEvent){
+            this.onGuildMemberRemoveEvent((GuildMemberRemoveEvent) event);
         }
     }
 }
