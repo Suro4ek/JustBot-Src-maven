@@ -227,6 +227,7 @@ public class ModuleCommand extends ModuleDiscord {
     }
 
 
+
     @Override
     public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
         if (event.getAuthor().isBot()) return;

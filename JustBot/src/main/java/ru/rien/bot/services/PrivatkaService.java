@@ -33,9 +33,15 @@ public class PrivatkaService {
         return privatkaRepository.findByVchannelidAndGuildEntity(channel_id, guildWrapper.getGuildEntity());
     }
 
-    public void createPrivatka(long channel_id, GuildWrapper guildWrapper){
+    @Nullable
+    public PrivatkaEntity findbyOwnerId(long owner_id, GuildWrapper guildWrapper){
+        return privatkaRepository.findByOwneridAndGuildEntity(owner_id, guildWrapper.getGuildEntity());
+    }
+
+    public void createPrivatka(long channel_id, GuildWrapper guildWrapper, long owner_id){
         PrivatkaEntity privatkaEntity = new PrivatkaEntity()
                 .setGuildEntity(guildWrapper.getGuildEntity())
+                .setOwnerid(owner_id)
                 .setVchannelid(channel_id);
         privatkaRepository.save(privatkaEntity);
     }

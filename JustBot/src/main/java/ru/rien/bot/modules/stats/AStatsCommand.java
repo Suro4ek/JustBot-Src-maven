@@ -17,33 +17,34 @@ import java.util.EnumSet;
 
 @Component
 public class AStatsCommand implements Command {
+
     @Override
     public void execute(CommandEvent event) {
         GuildWrapper guild = event.getGuild();
-        if(guild.getGuildEntity().isStats()){
+        if (guild.getGuildEntity().isStats()) {
             Category category = guild.getGuild().getCategoryById(guild.getGuildEntity().getStatsid());
-            if(category != null) {
+            if (category != null) {
                 category.delete().queue();
             }
             guild.removestats(guild.getGuildEntity().getStatsid());
             MessageUtils.sendAutoDeletedMessage(MessageUtils.getEmbed(event.getSender())
                     .setDescription("Статистика выключена")
-                    .build(),2000L,event.getChannel());
-        }else{
-           LocalDate date = LocalDate.now();
-           DateTimeFormatter outputFormat = DateTimeFormatter.ofPattern("MM/dd/yyyy");
-           Category category = guild.getGuild().createCategory("Stats").complete();
-           guild.initstats(category.getIdLong());
-           category.createVoiceChannel(date.format(outputFormat)).addPermissionOverride(guild.getGuild()
-                   .getPublicRole(),null,
-                   EnumSet.of(net.dv8tion.jda.api.Permission.VOICE_CONNECT))
-                   .queue(voiceChannel -> {
+                    .build(), 2000L, event.getChannel());
+        } else {
+            LocalDate date = LocalDate.now();
+            DateTimeFormatter outputFormat = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+            Category category = guild.getGuild().createCategory("Stats").complete();
+            guild.initstats(category.getIdLong());
+            category.createVoiceChannel(date.format(outputFormat)).addPermissionOverride(guild.getGuild()
+                            .getPublicRole(), null,
+                    EnumSet.of(net.dv8tion.jda.api.Permission.VOICE_CONNECT))
+                    .queue(voiceChannel -> {
                                 voiceChannel.createCopy().setName("Участников: " + guild.getGuild().getMembers().size()).queue();
-                        }
-                   );
+                            }
+                    );
             MessageUtils.sendAutoDeletedMessage(MessageUtils.getEmbed(event.getSender())
                     .setDescription("Статистика включена")
-                    .build(),2000L,event.getChannel());
+                    .build(), 2000L, event.getChannel());
         }
     }
 

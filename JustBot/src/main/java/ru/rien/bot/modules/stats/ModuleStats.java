@@ -21,6 +21,7 @@ import java.util.EnumSet;
 public class ModuleStats extends ModuleDiscord {
 
     private final GuildService guildService;
+
     public ModuleStats(GuildService guildService) {
         super("stats", false);
         this.guildService = guildService;
@@ -29,52 +30,52 @@ public class ModuleStats extends ModuleDiscord {
     @Override
     protected void onEnable() {
         registerListenerThis();
-        new JustBotTask("UpdateDateTask"){
+        new JustBotTask("UpdateDateTask") {
             @Override
             public void run() {
                 guildService.findall().forEach(guildEntity -> {
-                    GuildWrapper guildWrapper = getModuleDsBot().getManager().getGuildNoCache(""+guildEntity.getGuildid());
-                    if(guildWrapper.getGuildEntity().isStats()){
+                    GuildWrapper guildWrapper = getModuleDsBot().getManager().getGuildNoCache("" + guildEntity.getGuildid());
+                    if (guildWrapper.getGuildEntity().isStats()) {
                         Category category = guildWrapper.getGuild().getCategoryById(guildWrapper.getGuildEntity().getStatsid());
-                        if(category != null) {
+                        if (category != null) {
                             VoiceChannel v1 = category.getVoiceChannels().get(0);
-                            if(v1 != null){
+                            if (v1 != null) {
                                 LocalDate date = LocalDate.now();
                                 DateTimeFormatter outputFormat = DateTimeFormatter.ofPattern("MM/dd/yyyy");
                                 v1.getManager().setName(date.format(outputFormat)).queue();
                             }
                             VoiceChannel v2 = category.getVoiceChannels().get(1);
-                            if(v2 != null){
+                            if (v2 != null) {
                                 v2.getManager().setName("Участников " + guildWrapper.getGuild().getMemberCount()).queue();
                             }
                         }
                     }
                 });
             }
-        }.repeat(0, 1000*60*60*12);
+        }.repeat(0, 1000 * 60 * 60 * 12);
     }
 
 
     @Override
     public void onGuildMemberJoinEvent(@NotNull GuildMemberJoinEvent event) {
         GuildWrapper guild = getModuleDsBot().getManager().getGuild(event.getGuild().getId());
-        if(guild.getGuildEntity().isStats()){
+        if (guild.getGuildEntity().isStats()) {
             Category category = guild.getGuild().getCategoryById(guild.getGuildEntity().getStatsid());
-            if(category != null) {
+            if (category != null) {
                 VoiceChannel v1 = category.getVoiceChannels().get(1);
-                if(v1 != null){
-                    v1.getManager().setName("Участников "+ event.getGuild().getMemberCount()).queue();
+                if (v1 != null) {
+                    v1.getManager().setName("Участников " + event.getGuild().getMemberCount()).queue();
                 }
-            }else{
+            } else {
                 LocalDate date = LocalDate.now();
                 DateTimeFormatter outputFormat = DateTimeFormatter.ofPattern("MM/dd/yyyy");
                 category = guild.getGuild().createCategory("Stats").complete();
                 guild.initstats(category.getIdLong());
                 category.createVoiceChannel(date.format(outputFormat)).addPermissionOverride(guild.getGuild()
-                                .getPublicRole(),null,
+                                .getPublicRole(), null,
                         EnumSet.of(net.dv8tion.jda.api.Permission.VOICE_CONNECT))
                         .queue(voiceChannel -> {
-                                    voiceChannel.createCopy().setName("Участников "+ event.getGuild().getMemberCount()).queue();
+                                    voiceChannel.createCopy().setName("Участников " + event.getGuild().getMemberCount()).queue();
                                 }
                         );
             }
@@ -84,23 +85,23 @@ public class ModuleStats extends ModuleDiscord {
     @Override
     public void onGuildMemberRemoveEvent(@NotNull GuildMemberRemoveEvent event) {
         GuildWrapper guild = getModuleDsBot().getManager().getGuild(event.getGuild().getId());
-        if(guild.getGuildEntity().isStats()){
+        if (guild.getGuildEntity().isStats()) {
             Category category = guild.getGuild().getCategoryById(guild.getGuildEntity().getStatsid());
-            if(category != null) {
+            if (category != null) {
                 VoiceChannel v1 = category.getVoiceChannels().get(1);
-                if(v1 != null){
-                    v1.getManager().setName("Участников "+ event.getGuild().getMemberCount()).queue();
+                if (v1 != null) {
+                    v1.getManager().setName("Участников " + event.getGuild().getMemberCount()).queue();
                 }
-            }else{
+            } else {
                 LocalDate date = LocalDate.now();
                 DateTimeFormatter outputFormat = DateTimeFormatter.ofPattern("MM/dd/yyyy");
                 category = guild.getGuild().createCategory("Stats").complete();
                 guild.initstats(category.getIdLong());
                 category.createVoiceChannel(date.format(outputFormat)).addPermissionOverride(guild.getGuild()
-                                .getPublicRole(),null,
+                                .getPublicRole(), null,
                         EnumSet.of(net.dv8tion.jda.api.Permission.VOICE_CONNECT))
                         .queue(voiceChannel -> {
-                                    voiceChannel.createCopy().setName("Участников "+ event.getGuild().getMemberCount()).queue();
+                                    voiceChannel.createCopy().setName("Участников " + event.getGuild().getMemberCount()).queue();
                                 }
                         );
             }

@@ -17,4 +17,7 @@ public interface PrivatkaRepository extends JpaRepository<PrivatkaEntity, Long> 
 
     @Nullable
     PrivatkaEntity findByVchannelidAndGuildEntity(Long channel_id, GuildEntity guildEntity);
+
+    @Nullable
+    PrivatkaEntity findByOwneridAndGuildEntity(Long owner_id, GuildEntity guildEntity);
 }

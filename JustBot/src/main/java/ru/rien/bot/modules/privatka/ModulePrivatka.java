@@ -1,5 +1,6 @@
 package ru.rien.bot.modules.privatka;
 
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.guild.GenericGuildEvent;
 import net.dv8tion.jda.api.events.guild.voice.GenericGuildVoiceUpdateEvent;
@@ -13,6 +14,7 @@ import ru.rien.bot.module.ModuleDiscord;
 import ru.rien.bot.objects.GuildWrapper;
 import ru.rien.bot.services.PrivatkaService;
 
+import java.util.EnumSet;
 import java.util.List;
 
 @Component
@@ -28,7 +30,7 @@ public class ModulePrivatka extends ModuleDiscord {
     protected void onEnable() {
         clear();
         registerListenerThis();
-        registerCommand(new PrivatkaCommand());
+        registerCommand(new PrivatkaCommand(privatkaService));
     }
 
     @Override
@@ -49,9 +51,9 @@ public class ModulePrivatka extends ModuleDiscord {
     }
 
     public void createprivatka(Category category, Member member,@NotNull GenericGuildEvent event, GuildWrapper guildWrapper){
-        category.createVoiceChannel("Приватка: " + member.getEffectiveName()).queue(voiceChannel -> {
-
-            privatkaService.createPrivatka(voiceChannel.getIdLong(), guildWrapper);
+        category.createVoiceChannel("Приватка: " + member.getEffectiveName()).setUserlimit(5).addMemberPermissionOverride(member.getIdLong(),
+                EnumSet.of(Permission.VIEW_CHANNEL, Permission.MANAGE_CHANNEL, Permission.MANAGE_PERMISSIONS), null).queue(voiceChannel -> {
+            privatkaService.createPrivatka(voiceChannel.getIdLong(), guildWrapper, member.getIdLong());
             try {
                 event.getGuild().moveVoiceMember(member, voiceChannel).queue();
             }catch (IllegalStateException e){
@@ -61,10 +63,10 @@ public class ModulePrivatka extends ModuleDiscord {
         });
     }
 
-    public void deleteprivatka(@NotNull  GenericGuildVoiceUpdateEvent event, GuildWrapper guildWrapper){
-        if(event.getChannelLeft() != null && event.getChannelLeft().getMembers().size() == 0){
+    public void deleteprivatka(@NotNull  GenericGuildVoiceUpdateEvent event, GuildWrapper guildWrapper, Category category){
+        if(category.getVoiceChannels().contains(event.getChannelLeft()) && event.getChannelLeft() != null && event.getChannelLeft().getMembers().size() == 0) {
             PrivatkaEntity privatkaEntity = privatkaService.findbyChannelId(event.getChannelLeft().getIdLong(), guildWrapper);
-            if(privatkaEntity != null){
+            if (privatkaEntity != null) {
                 VoiceChannel voiceChannel = event.getChannelLeft();
                 voiceChannel.delete().queue();
                 privatkaService.delete(privatkaEntity);
@@ -78,7 +80,7 @@ public class ModulePrivatka extends ModuleDiscord {
         if(guildWrapper.getGuildEntity().getCategory_id() != 0 && guildWrapper.getGuildEntity().getCreate_channel_id() != 0){
             Category category = event.getGuild().getCategoryById(guildWrapper.getGuildEntity().getCategory_id());
             if (category != null) {
-                deleteprivatka(event, guildWrapper);
+                deleteprivatka(event, guildWrapper, category);
             }
         }
     }
@@ -89,7 +91,7 @@ public class ModulePrivatka extends ModuleDiscord {
         if(guildWrapper.getGuildEntity().getCategory_id() != 0 && guildWrapper.getGuildEntity().getCreate_channel_id() != 0){
             Category category = event.getGuild().getCategoryById(guildWrapper.getGuildEntity().getCategory_id());
             if (category != null) {
-                deleteprivatka(event, guildWrapper);
+                deleteprivatka(event, guildWrapper,category);
                 GuildChannel guildChannel = guildWrapper.getGuild().getGuildChannelById(guildWrapper.getGuildEntity().getCreate_channel_id());
                 if(guildChannel != null) {
                     if (guildChannel.getIdLong() == event.getChannelJoined().getIdLong()) {

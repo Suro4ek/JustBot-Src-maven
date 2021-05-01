@@ -22,4 +22,7 @@ public class PrivatkaEntity {
     @Column(name = "channel_id", nullable = false)
     private Long vchannelid;
 
+    @Column(name = "owner_id", nullable = false)
+    private Long ownerid;
+
 }

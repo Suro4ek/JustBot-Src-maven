@@ -117,6 +117,8 @@ public enum Permission {
     REMIND_COMMAND("remind", true),
     TAGS_COMMAND("tags", true),
     TAGS_ADMIN("tags.admin", false),
+    PRIVATKA_COMMAND("privatka", true),
+    PRIVATKA_INIT("privatka.init", false),
     BLACKLIST_BYPASS("blacklist.bypass", false),
     COLOR_COMMAND("color", true),
     JUMBO_COMMAND("jumbo", true);
