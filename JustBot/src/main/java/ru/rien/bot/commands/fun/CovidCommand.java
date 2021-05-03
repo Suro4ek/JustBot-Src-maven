@@ -36,13 +36,13 @@ public class CovidCommand implements Command {
                 JSONObject jsObject = response.getBody().getObject();
                 event.getChannel().sendMessage(MessageUtils.getEmbed(user)
                         .setTitle("Ковид").
-                                addField("Всего","**Зараженных** " + jsObject.getInt("cases") + "\n" +
-                                        "**Выздоровели** " + jsObject.getInt("recovered") +"\n" +
-                                        "**Умерло** " + jsObject.getInt("deaths") + "\n" +
-                                        "**Население** " + jsObject.getInt("population"), true).
-                                addField("Сегодня","**Зараженных** " + jsObject.getInt("todayCases") + "\n" +
-                                        "**Выздоровели** " + jsObject.getInt("todayRecovered") +"\n" +
-                                        "**Умерло** " + jsObject.getInt("todayDeaths"), true).
+                                addField("Всего","**Зараженных** " + jsObject.getLong("cases") + "\n" +
+                                        "**Выздоровели** " + jsObject.getLong("recovered") +"\n" +
+                                        "**Умерло** " + jsObject.getLong("deaths") + "\n" +
+                                        "**Население** " + jsObject.getLong("population"), true).
+                                addField("Сегодня","**Зараженных** " + jsObject.getLong("todayCases") + "\n" +
+                                        "**Выздоровели** " + jsObject.getLong("todayRecovered") +"\n" +
+                                        "**Умерло** " + jsObject.getLong("todayDeaths"), true).
                                 addField("**В критическом состоянии** ", jsObject.getLong("critical")+"", true).
                                 addField("**Тестов** ", jsObject.getLong("tests")+"", true).
 //                                setFooter("`Последнее обновление `").
@@ -66,13 +66,13 @@ public class CovidCommand implements Command {
                 String countryimg = jsObject.getJSONObject("countryInfo").getString("flag");
                 event.getChannel().sendMessage(MessageUtils.getEmbed(user)
                 .setTitle("Ковид в " + country).
-                                addField("Всего","**Зараженных** " + jsObject.getInt("cases") + "\n" +
-                                        "**Выздоровели** " + jsObject.getInt("recovered") +"\n" +
-                                        "**Умерло** " + jsObject.getInt("deaths") + "\n" +
-                                        "**Население** " + jsObject.getInt("population"), true).
-                                addField("Сегодня","**Зараженных** " + jsObject.getInt("todayCases") + "\n" +
-                                        "**Выздоровели** " + jsObject.getInt("todayRecovered") +"\n" +
-                                        "**Умерло** " + jsObject.getInt("todayDeaths"), true).
+                                addField("Всего","**Зараженных** " + jsObject.getLong("cases") + "\n" +
+                                        "**Выздоровели** " + jsObject.getLong("recovered") +"\n" +
+                                        "**Умерло** " + jsObject.getLong("deaths") + "\n" +
+                                        "**Население** " + jsObject.getLong("population"), true).
+                                addField("Сегодня","**Зараженных** " + jsObject.getLong("todayCases") + "\n" +
+                                        "**Выздоровели** " + jsObject.getLong("todayRecovered") +"\n" +
+                                        "**Умерло** " + jsObject.getLong("todayDeaths"), true).
                                 addField("**В критическом состоянии** ", jsObject.getLong("critical")+"", true).
                                 addField("**Тестов** ", jsObject.getLong("tests")+"", true).
                                 setImage(countryimg).
