@@ -35,12 +35,12 @@ public class KpopCommand implements Command {
 
     @Override
     public String getDescription(GuildWrapper guildWrapper) {
-        return null;
+        return "";
     }
 
     @Override
     public String getUsage(GuildWrapper guildWrapper) {
-        return null;
+        return "";
     }
 
     @Override

@@ -113,6 +113,7 @@ public enum Permission {
     SKIN_COMMAND("skin",true),
     AVATAR_COMMAND("avatar", true),
     LANG_COMMAND("lang", true),
+    COVID_COMMAND("covid", true),
     AVATAR_OTHER("avatar.other", false),
     REMIND_COMMAND("remind", true),
     TAGS_COMMAND("tags", true),
