@@ -16,6 +16,12 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: Install SSH key
+      uses: shimataro/ssh-key-action@v2
+      with:
+        key: ${{ secrets.SSH_KEY_ME }}
+        name: id_rsa # optional
+        known_hosts: ${{ secrets.KNOWN_HOSTS_ME }}
     - name: Set up JDK 11
       uses: actions/setup-java@v2
       with:
@@ -29,6 +35,8 @@ jobs:
           ${{ runner.os }}-maven-    - run: java -version && mvn --version
     - name: Build with Maven
       run: mvn -B package --file pom.xml
+    - name: copy using rsync the packed jar
+      run: scp JustBot/TestDir/JustBot.jar  ${{ secrets.SSH_USER_ME }}@${{ secrets.HOST_IP_ME }}:/root/discordtest/
     - uses: actions/upload-artifact@v2-preview
       with:
         name: JustBot
