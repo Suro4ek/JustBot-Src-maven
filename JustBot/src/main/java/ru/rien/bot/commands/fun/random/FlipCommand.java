@@ -42,7 +42,7 @@ public class FlipCommand implements Command {
 
     @Override
     public CommandType getType() {
-        return CommandType.GENERAL;
+        return CommandType.RANDOM;
     }
 
     @Override

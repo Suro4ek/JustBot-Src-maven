@@ -7,6 +7,7 @@ public enum CommandType {
 
     //TODO Запихнуть их в github message
     GENERAL("Основные",true),
+    RANDOM("Случайные",true),
     NSWF("Hmm",true),
     ADMIN("Админ",false),
     MUSIC("Музыкальные",true),
