@@ -38,9 +38,7 @@ jobs:
         scp: |
          'JustBot/TestDir/*' => /root/discordtest
         last_ssh: |
-          screen -x testbot
-          ^C
-          sh start.sh
+          pkill -f JustBot.jar
     - uses: actions/upload-artifact@v2-preview
       with:
         name: JustBot
