@@ -35,7 +35,7 @@ public class CovidCommand implements Command {
                 }
                 JSONObject jsObject = response.getBody().getObject();
                 event.getChannel().sendMessage(MessageUtils.getEmbed(user)
-                        .setTitle("Ковид в ").
+                        .setTitle("Ковид").
                                 addField("Всего","**Зараженных** " + jsObject.getInt("cases") + "\n" +
                                         "**Выздоровели** " + jsObject.getInt("recovered") +"\n" +
                                         "**Умерло** " + jsObject.getInt("deaths") + "\n" +
@@ -43,8 +43,8 @@ public class CovidCommand implements Command {
                                 addField("Сегодня","**Зараженных** " + jsObject.getInt("todayCases") + "\n" +
                                         "**Выздоровели** " + jsObject.getInt("todayRecovered") +"\n" +
                                         "**Умерло** " + jsObject.getInt("todayDeaths"), true).
-                                addField("**В критическом состоянии** ", jsObject.getInt("critical")+"", true).
-                                addField("**Тестов** ", jsObject.getInt("tests")+"", true).
+                                addField("**В критическом состоянии** ", jsObject.getLong("critical")+"", true).
+                                addField("**Тестов** ", jsObject.getLong("tests")+"", true).
 //                                setFooter("`Последнее обновление `").
         build())
                         .queue();
@@ -73,8 +73,8 @@ public class CovidCommand implements Command {
                                 addField("Сегодня","**Зараженных** " + jsObject.getInt("todayCases") + "\n" +
                                         "**Выздоровели** " + jsObject.getInt("todayRecovered") +"\n" +
                                         "**Умерло** " + jsObject.getInt("todayDeaths"), true).
-                                addField("**В критическом состоянии** ", jsObject.getInt("critical")+"", true).
-                                addField("**Тестов** ", jsObject.getInt("tests")+"", true).
+                                addField("**В критическом состоянии** ", jsObject.getLong("critical")+"", true).
+                                addField("**Тестов** ", jsObject.getLong("tests")+"", true).
                                 setImage(countryimg).
 //                                setFooter("`Последнее обновление `").
                                 build())
