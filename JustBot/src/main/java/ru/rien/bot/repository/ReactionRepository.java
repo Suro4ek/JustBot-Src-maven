@@ -7,6 +7,7 @@ import ru.rien.bot.entity.GuildEntity;
 import ru.rien.bot.entity.ReactionEntity;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Repository
 @Transactional
@@ -15,5 +16,6 @@ public interface ReactionRepository extends JpaRepository<ReactionEntity, Long> 
     @Nullable
     ReactionEntity findByMessageidAndGuildEntity(Long messageid, GuildEntity guildEntity);
 
-
+    @Nullable
+    List<ReactionEntity> findByGuildEntity(GuildEntity guildEntity);
 }

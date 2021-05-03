@@ -1,7 +1,9 @@
 package ru.rien.bot.modules.reactinrole;
 
+import com.vdurmont.emoji.EmojiParser;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageDeleteEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionRemoveEvent;
 import org.jetbrains.annotations.NotNull;
@@ -33,13 +35,32 @@ public class ModuleReactionRole extends ModuleDiscord {
             Guild guild = event.getGuild();
             Long message_id = event.getMessageIdLong();
             GuildWrapper guildWrapper = getModuleDsBot().getManager().getGuild(guild.getId());
-            if (reactionService.checkMessageRole(message_id, guildWrapper)) {
-                HashMap<Long, Long> roles = reactionService.getReactionRoles(message_id, guildWrapper);
-                Role role = guild.getRoleById(roles.get(event.getReactionEmote().getIdLong()));
+            if (guildWrapper.getReactionLoader().getReactionEntity(message_id) != null) {
+                String emojiAsText = "";
+                if(event.getReactionEmote().isEmote()) {
+                    emojiAsText = event.getReactionEmote().getEmote().getAsMention();
+                }
+
+                if(event.getReactionEmote().isEmoji()) {
+                    emojiAsText = EmojiParser.parseToAliases(event.getReactionEmote().getEmoji());
+                }
+                HashMap<String, Long> roles = guildWrapper.getReactionLoader().getReactionEntity(message_id);
+                Role role = guild.getRoleById(roles.get(emojiAsText));
                 if (role != null) {
                     guild.addRoleToMember(event.getMember(), role).queue();
                 }
             }
+        }
+    }
+
+    @Override
+    public void onGuildMessageDeleteEvent(@NotNull GuildMessageDeleteEvent event) {
+        Guild guild = event.getGuild();
+        Long message_id = event.getMessageIdLong();
+        GuildWrapper guildWrapper = getModuleDsBot().getManager().getGuild(guild.getId());
+        if(guildWrapper.getReactionLoader().getReactionEntities().get(message_id) != null){
+            guildWrapper.getReactionLoader().getReactionEntities().remove(message_id);
+            reactionService.delete(message_id,guildWrapper);
         }
     }
 
@@ -49,9 +70,17 @@ public class ModuleReactionRole extends ModuleDiscord {
             Guild guild = event.getGuild();
             Long message_id = event.getMessageIdLong();
             GuildWrapper guildWrapper = getModuleDsBot().getManager().getGuild(guild.getId());
-            if (reactionService.checkMessageRole(message_id, guildWrapper)) {
-                HashMap<Long, Long> roles = reactionService.getReactionRoles(message_id, guildWrapper);
-                Role role = guild.getRoleById(roles.get(event.getReactionEmote().getIdLong()));
+            if (guildWrapper.getReactionLoader().getReactionEntity(message_id) != null) {
+                String emojiAsText = "";
+                if(event.getReactionEmote().isEmote()) {
+                    emojiAsText = event.getReactionEmote().getEmote().getAsMention();
+                }
+
+                if(event.getReactionEmote().isEmoji()) {
+                    emojiAsText = EmojiParser.parseToAliases(event.getReactionEmote().getEmoji());
+                }
+                HashMap<String, Long> roles = guildWrapper.getReactionLoader().getReactionEntity(message_id);
+                Role role = guild.getRoleById(roles.get(emojiAsText));
                 if (role != null) {
                     guild.removeRoleFromMember(event.getMember(), role).queue();
                 }

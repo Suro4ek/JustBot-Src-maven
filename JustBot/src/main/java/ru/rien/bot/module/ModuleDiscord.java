@@ -12,6 +12,7 @@ import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceUpdateEvent;
 import net.dv8tion.jda.api.events.message.MessageDeleteEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageDeleteEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionRemoveEvent;
@@ -121,6 +122,9 @@ public abstract class ModuleDiscord extends CommonModule implements EventListene
     public void onGuildMessageReactionRemoveEvent(@Nonnull GuildMessageReactionRemoveEvent event){
 
     }
+    public void onGuildMessageDeleteEvent(@Nonnull GuildMessageDeleteEvent event){
+
+    }
 
     @Override
     public void onEvent(@NotNull GenericEvent event) {
@@ -168,6 +172,8 @@ public abstract class ModuleDiscord extends CommonModule implements EventListene
             this.onGuildMemberRemoveEvent((GuildMemberRemoveEvent) event);
         }else if(event instanceof GuildMessageReactionRemoveEvent){
             this.onGuildMessageReactionRemoveEvent((GuildMessageReactionRemoveEvent) event);
+        }else if(event instanceof GuildMessageDeleteEvent){
+            this.onGuildMessageDeleteEvent((GuildMessageDeleteEvent) event);
         }
     }
 }

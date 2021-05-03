@@ -3,6 +3,7 @@ package ru.rien.bot.objects;
 import com.google.common.cache.CacheLoader;
 import ru.rien.bot.entity.GroupEntity;
 import ru.rien.bot.entity.GuildEntity;
+import ru.rien.bot.entity.ReactionEntity;
 import ru.rien.bot.modules.command.Command;
 import ru.rien.bot.modules.command.ModuleCommand;
 import ru.rien.bot.modules.dsBot.ModuleDsBot;
@@ -10,6 +11,7 @@ import ru.rien.bot.permission.Group;
 import ru.rien.bot.services.GuildService;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.regex.Pattern;
@@ -50,6 +52,14 @@ public class GuildWrapperLoader extends CacheLoader<String, GuildWrapper> {
                     group.linkRole(String.valueOf(groupEntity.getRole_id()));
                     group.addPermission(groupEntity.getPermisisons());
                 }
+            }
+            List<ReactionEntity> reactionEntities = guildService.reactionEntities(guildEntity);
+            if(reactionEntities != null){
+                HashMap<Long, ReactionEntity> longReactionEntityHashMap = new HashMap<>();
+                reactionEntities.forEach(reactionEntity -> {
+                    longReactionEntityHashMap.put(reactionEntity.getMessageid(), reactionEntity);
+                });
+                wrapper.getReactionLoader().setReactionEntities(longReactionEntityHashMap);
             }
 //            List<GroupEntity> groupEntity = AsyncDB.getDaoFactory().getGroupDao().findByGuild(guildEntity);
 //            for (GroupEntity entity : groupEntity) {

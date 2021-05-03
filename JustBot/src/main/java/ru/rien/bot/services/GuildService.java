@@ -1,13 +1,16 @@
 package ru.rien.bot.services;
 
 import org.jetbrains.annotations.Nullable;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.rien.bot.entity.GroupEntity;
 import ru.rien.bot.entity.GuildEntity;
+import ru.rien.bot.entity.ReactionEntity;
 import ru.rien.bot.objects.GuildWrapper;
 import ru.rien.bot.permission.Group;
 import ru.rien.bot.repository.GroupRepository;
 import ru.rien.bot.repository.GuildReposytory;
+import ru.rien.bot.repository.ReactionRepository;
 
 import java.util.List;
 
@@ -15,10 +18,12 @@ import java.util.List;
 public class GuildService {
     private final GuildReposytory guildReposytory;
     private final GroupRepository groupRepository;
+    private final ReactionRepository reactionRepository;
 
-    public GuildService(GuildReposytory guildReposytory, GroupRepository groupRepository) {
+    public GuildService(GuildReposytory guildReposytory, GroupRepository groupRepository, ReactionRepository reactionRepository) {
         this.guildReposytory = guildReposytory;
         this.groupRepository = groupRepository;
+        this.reactionRepository = reactionRepository;
     }
 
     @Nullable
@@ -41,6 +46,10 @@ public class GuildService {
 
     public void saveGroups(GuildEntity guildEntity, List<Group> groups){
 
+    }
+
+    public List<ReactionEntity> reactionEntities(GuildEntity guildEntity){
+        return reactionRepository.findByGuildEntity(guildEntity);
     }
 
     public List<GuildEntity> findall(){

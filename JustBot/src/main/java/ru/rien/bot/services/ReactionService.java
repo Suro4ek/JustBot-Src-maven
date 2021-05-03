@@ -3,11 +3,13 @@ package ru.rien.bot.services;
 import net.dv8tion.jda.api.entities.Guild;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.rien.bot.entity.GuildEntity;
 import ru.rien.bot.entity.ReactionEntity;
 import ru.rien.bot.objects.GuildWrapper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 @Service
 public class ReactionService {
@@ -20,35 +22,35 @@ public class ReactionService {
                 .setGuildEntity(guildWrapper.getGuildEntity())
                 .setMessageid(messageid)
                 .setRoles(new ArrayList<>());
+        guildWrapper.getReactionLoader().getReactionEntities().put(messageid,reactionEntity);
         reactionRepository.save(reactionEntity);
 
     }
 
-    public void addReactionRole(Long message_id,Long reaction, Long role, GuildWrapper guildWrapper){
+    public void addReactionRole(Long message_id, GuildWrapper guildWrapper){
         ReactionEntity reactionEntity = reactionRepository.findByMessageidAndGuildEntity(message_id,guildWrapper.getGuildEntity());
-        reactionEntity.getRoles().add(reaction + " " + role);
-        reactionRepository.save(reactionEntity);
+        if(reactionEntity != null) {
+            reactionEntity.setRoles(guildWrapper.getReactionLoader().reactionEntities.get(message_id).getRoles());
+            reactionRepository.save(reactionEntity);
+        }
     }
 
-    public void removeReactionRole(Long message_id, Long reaction, Long role, GuildWrapper guildWrapper){
+    public void removeReactionRole(Long message_id, GuildWrapper guildWrapper){
         ReactionEntity reactionEntity = reactionRepository.findByMessageidAndGuildEntity(message_id, guildWrapper.getGuildEntity());
-        reactionEntity.getRoles().remove(reaction + " " + role);
-        reactionRepository.save(reactionEntity);
+        if(reactionEntity != null) {
+            reactionEntity.setRoles(guildWrapper.getReactionLoader().reactionEntities.get(message_id).getRoles());
+            reactionRepository.save(reactionEntity);
+        }
     }
 
-    public HashMap<Long, Long> getReactionRoles(Long message_id, GuildWrapper guildWrapper){
-        HashMap<Long, Long> roles = new HashMap<>();
+    public void delete(Long message_id, GuildWrapper guildWrapper){
         ReactionEntity reactionEntity = reactionRepository.findByMessageidAndGuildEntity(message_id, guildWrapper.getGuildEntity());
-        reactionEntity.getRoles().forEach(s -> {
-                Long reaction = Long.parseLong(s.split(" ")[0]);
-                Long role = Long.parseLong(s.split(" ")[1]);
-                roles.put(reaction, role);
-        });
-        return roles;
+        if(reactionEntity != null)
+            reactionRepository.delete(reactionEntity);
     }
 
-    public boolean checkMessageRole(Long message_id, GuildWrapper guildWrapper){
-        ReactionEntity reactionEntity = reactionRepository.findByMessageidAndGuildEntity(message_id, guildWrapper.getGuildEntity());
-        return reactionEntity != null;
+    public boolean checkmessage(Long message_id, GuildEntity guildEntity){
+        return reactionRepository.findByMessageidAndGuildEntity(message_id, guildEntity) == null;
     }
+
 }

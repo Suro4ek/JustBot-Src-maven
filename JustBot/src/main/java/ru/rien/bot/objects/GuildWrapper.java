@@ -7,8 +7,10 @@ import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
 import org.jetbrains.annotations.Nullable;
 import ru.rien.bot.entity.GuildEntity;
+import ru.rien.bot.entity.ReactionEntity;
 import ru.rien.bot.modules.dsBot.ModuleDsBot;
 import ru.rien.bot.modules.messsage.Language;
+import ru.rien.bot.modules.reactinrole.ReactionLoader;
 import ru.rien.bot.permission.PerGuildPermissions;
 import ru.rien.bot.utils.GuildUtils;
 
@@ -27,6 +29,7 @@ public class GuildWrapper {
     private PerGuildPermissions permissions = new PerGuildPermissions();
     private Set<String> autoAssignRoles = new HashSet<>();
     private Set<String> selfAssignRoles = new HashSet<>();
+    private ReactionLoader reactionLoader = new ReactionLoader(this);
     private long caterogy_id = 0;
     private long creeate_voice_channel = 0;
     private boolean songnick = false;
@@ -48,6 +51,9 @@ public class GuildWrapper {
 //    private NINO nino = null;
     private GuildSettings settings = null;
 
+    public ReactionLoader getReactionLoader() {
+        return reactionLoader;
+    }
 
     public void setNswf(Long nswf) {
         this.nswf = nswf;
