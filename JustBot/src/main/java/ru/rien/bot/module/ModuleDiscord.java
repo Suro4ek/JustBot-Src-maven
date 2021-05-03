@@ -14,6 +14,7 @@ import net.dv8tion.jda.api.events.message.MessageDeleteEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
+import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionRemoveEvent;
 import net.dv8tion.jda.api.events.role.RoleDeleteEvent;
 import net.dv8tion.jda.api.events.role.update.*;
 import net.dv8tion.jda.api.events.user.update.UserUpdateOnlineStatusEvent;
@@ -117,6 +118,10 @@ public abstract class ModuleDiscord extends CommonModule implements EventListene
 
     }
 
+    public void onGuildMessageReactionRemoveEvent(@Nonnull GuildMessageReactionRemoveEvent event){
+
+    }
+
     @Override
     public void onEvent(@NotNull GenericEvent event) {
         if (event instanceof GuildMessageReceivedEvent) {
@@ -161,6 +166,8 @@ public abstract class ModuleDiscord extends CommonModule implements EventListene
             this.onGuildMemberJoinEvent((GuildMemberJoinEvent) event);
         }else if(event instanceof GuildMemberRemoveEvent){
             this.onGuildMemberRemoveEvent((GuildMemberRemoveEvent) event);
+        }else if(event instanceof GuildMessageReactionRemoveEvent){
+            this.onGuildMessageReactionRemoveEvent((GuildMessageReactionRemoveEvent) event);
         }
     }
 }

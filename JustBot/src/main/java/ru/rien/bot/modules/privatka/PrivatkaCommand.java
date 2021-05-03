@@ -82,6 +82,20 @@ public class PrivatkaCommand implements Command {
                 }else{
                     MessageUtils.sendAutoDeletedMessage(MessageUtils.getEmbed(sender).setDescription("У вас нет приватки").build(), TimeUnit.SECONDS.toMillis(5), channel);
                 }
+            }else if(args[0].equalsIgnoreCase("text")){
+                PrivatkaEntity privatkaEntity = privatkaService.findbyOwnerId(sender.getIdLong(), guild);
+                if(privatkaEntity != null){
+                    Category category = guild.getGuild().getCategoryById(guild.getGuildEntity().getCategory_id());
+                    if(category != null) {
+                        category.createTextChannel("Техтовый чат: " + sender.getName()).addPermissionOverride(event.getMember(), EnumSet.of(net.dv8tion.jda.api.Permission.VIEW_CHANNEL), null)
+                                .queue(textChannel -> {
+                                    privatkaEntity.setTextid(textChannel.getIdLong());
+                                    privatkaService.save(privatkaEntity);
+                                });
+                    }
+                }else{
+                    MessageUtils.sendAutoDeletedMessage(MessageUtils.getEmbed(sender).setDescription("У вас нет приватки").build(), TimeUnit.SECONDS.toMillis(5), channel);
+                }
             }
         }else if(args.length == 2){
             if(args[0].equalsIgnoreCase("permit") || args[0].equalsIgnoreCase("allow")){
@@ -96,9 +110,35 @@ public class PrivatkaCommand implements Command {
                 if (privatkaEntity != null) {
                     VoiceChannel voiceChannel = guild.getGuild().getVoiceChannelById(privatkaEntity.getVchannelid());
                     if (voiceChannel != null) {
-                        voiceChannel.getManager().putPermissionOverride(guild.getGuild().getMember(user), EnumSet.of(net.dv8tion.jda.api.Permission.VOICE_CONNECT),null)
+                        voiceChannel.getManager().putPermissionOverride(guild.getGuild().getMember(user), EnumSet.of(net.dv8tion.jda.api.Permission.VIEW_CHANNEL,net.dv8tion.jda.api.Permission.VOICE_CONNECT),null)
                                 .queue();
                         MessageUtils.sendAutoDeletedMessage(MessageUtils.getEmbed(sender).setDescription("Пользователию " + userString+ " разрешено заходить в приватку").build(), TimeUnit.SECONDS.toMillis(5), channel);
+                    }
+                } else {
+                    MessageUtils.sendAutoDeletedMessage(MessageUtils.getEmbed(sender).setDescription("У вас нет приватки").build(), TimeUnit.SECONDS.toMillis(5), channel);
+                }
+            }else if(args[0].equalsIgnoreCase("owner")){
+                String userString = args[1];
+                User user = GuildUtils.getUser(userString, guild.getGuildId());
+                if (user == null || guild.getGuild().getMember(user) == null) {
+                    MessageUtils.sendErrorMessage("Пользователь не найден", channel);
+                    return;
+                }
+
+                PrivatkaEntity privatkaEntity = privatkaService.findbyOwnerId(sender.getIdLong(), guild);
+                if(privatkaService.findbyOwnerId(user.getIdLong(),guild) != null){
+                    MessageUtils.sendAutoDeletedMessage(MessageUtils.getEmbed(sender).setDescription("У пользователя уже есть приватка").build(), TimeUnit.SECONDS.toMillis(5), channel);
+                    return;
+                }
+                if (privatkaEntity != null) {
+                    VoiceChannel voiceChannel = guild.getGuild().getVoiceChannelById(privatkaEntity.getVchannelid());
+                    if (voiceChannel != null) {
+                        voiceChannel.getManager().removePermissionOverride(event.getMember()).queue();
+                        voiceChannel.getManager().putPermissionOverride(guild.getGuild().getMember(user),
+                                EnumSet.of(net.dv8tion.jda.api.Permission.VIEW_CHANNEL, net.dv8tion.jda.api.Permission.VOICE_CONNECT),null)
+                                .queue();
+                        privatkaService.newOwner(guild.getGuild().getMember(user).getIdLong(), privatkaEntity);
+                        MessageUtils.sendAutoDeletedMessage(MessageUtils.getEmbed(sender).setDescription("Пользователию " + userString+ " теперь новый владелец").build(), TimeUnit.SECONDS.toMillis(5), channel);
                     }
                 } else {
                     MessageUtils.sendAutoDeletedMessage(MessageUtils.getEmbed(sender).setDescription("У вас нет приватки").build(), TimeUnit.SECONDS.toMillis(5), channel);
@@ -114,28 +154,53 @@ public class PrivatkaCommand implements Command {
                 if (privatkaEntity != null) {
                     VoiceChannel voiceChannel = guild.getGuild().getVoiceChannelById(privatkaEntity.getVchannelid());
                     if (voiceChannel != null) {
-                        voiceChannel.getManager().putPermissionOverride(guild.getGuild().getMember(user), null,EnumSet.of(net.dv8tion.jda.api.Permission.VOICE_CONNECT))
+                        voiceChannel.getManager().putPermissionOverride(guild.getGuild().getMember(user), null,EnumSet.of(net.dv8tion.jda.api.Permission.VIEW_CHANNEL,net.dv8tion.jda.api.Permission.VOICE_CONNECT))
                                 .queue();
                         MessageUtils.sendAutoDeletedMessage(MessageUtils.getEmbed(sender).setDescription("Пользователию " + userString+ " запрещено заходить в приватку").build(), TimeUnit.SECONDS.toMillis(5), channel);
                     }
                 } else {
                     MessageUtils.sendAutoDeletedMessage(MessageUtils.getEmbed(sender).setDescription("У вас нет приватки").build(), TimeUnit.SECONDS.toMillis(5), channel);
-
                 }
-            }
-        }else {
-            if (args[0].equalsIgnoreCase("name")) {
-                PrivatkaEntity privatkaEntity = privatkaService.findbyOwnerId(sender.getIdLong(), guild);
-                if (privatkaEntity != null) {
-                    VoiceChannel voiceChannel = guild.getGuild().getVoiceChannelById(privatkaEntity.getVchannelid());
-                    if (voiceChannel != null) {
-                        voiceChannel.getManager().setName(event.getArguments(1)).queue();
-                        MessageUtils.sendAutoDeletedMessage(MessageUtils.getEmbed(sender).setDescription("Теперь приватка называется: " + event.getArguments(1)).build(), TimeUnit.SECONDS.toMillis(5), channel);
+            }else if(args[0].equalsIgnoreCase("limit")){
+                try {
+                    Integer limit = Integer.parseInt(args[1]);
+                    if(limit < 0 || limit > 99){
+                        MessageUtils.sendAutoDeletedMessage(MessageUtils.getEmbed(sender).setDescription("Вы ввели некоректное число").build(), TimeUnit.SECONDS.toMillis(5), channel);
+                        return;
                     }
-                } else {
-                    MessageUtils.sendAutoDeletedMessage(MessageUtils.getEmbed(sender).setDescription("У вас нет приватки").build(), TimeUnit.SECONDS.toMillis(5), channel);
-
+                    PrivatkaEntity privatkaEntity = privatkaService.findbyOwnerId(sender.getIdLong(), guild);
+                    if (privatkaEntity != null) {
+                        VoiceChannel voiceChannel = guild.getGuild().getVoiceChannelById(privatkaEntity.getVchannelid());
+                        if (voiceChannel != null) {
+                            voiceChannel.getManager().setUserLimit(limit).queue();
+                            MessageUtils.sendAutoDeletedMessage(MessageUtils.getEmbed(sender).setDescription("Новый лимит " + limit).build(), TimeUnit.SECONDS.toMillis(5), channel);
+                        }
+                    } else {
+                        MessageUtils.sendAutoDeletedMessage(MessageUtils.getEmbed(sender).setDescription("У вас нет приватки").build(), TimeUnit.SECONDS.toMillis(5), channel);
+                    }
+                }catch (NumberFormatException e){
+                    MessageUtils.sendAutoDeletedMessage(MessageUtils.getEmbed(sender).setDescription("Вы ввели не число").build(), TimeUnit.SECONDS.toMillis(5), channel);
                 }
+            }else {
+                change_name(event, args, channel, sender, guild);
+            }
+        }else{
+            change_name(event, args, channel, sender, guild);
+        }
+    }
+
+    private void change_name(CommandEvent event, String[] args, TextChannel channel, User sender, GuildWrapper guild) {
+        if(args[0].equalsIgnoreCase("name")){
+            PrivatkaEntity privatkaEntity = privatkaService.findbyOwnerId(sender.getIdLong(), guild);
+            if (privatkaEntity != null) {
+                VoiceChannel voiceChannel = guild.getGuild().getVoiceChannelById(privatkaEntity.getVchannelid());
+                if (voiceChannel != null) {
+                    voiceChannel.getManager().setName(event.getArguments(1)).queue();
+                    MessageUtils.sendAutoDeletedMessage(MessageUtils.getEmbed(sender).setDescription("Теперь приватка называется: " + event.getArguments(1)).build(), TimeUnit.SECONDS.toMillis(5), channel);
+                }
+            } else {
+                MessageUtils.sendAutoDeletedMessage(MessageUtils.getEmbed(sender).setDescription("У вас нет приватки").build(), TimeUnit.SECONDS.toMillis(5), channel);
+
             }
         }
     }
@@ -158,7 +223,9 @@ public class PrivatkaCommand implements Command {
                 "{%}privatka deny/reject [пользователь] - запретить заходить в приватку\n" +
                 "{%}privatka name [название...] - поменять название каналу\n" +
                 "{%}privatka lock - заблокировать вход в приватку\n" +
-                "{%}privatka unlock - разблокировать вход в приватку";
+                "{%}privatka unlock - разблокировать вход в приватку\n" +
+                "{%}privatka owner [пользователь] - новый владелец\n" +
+                "{%}privatka limit [число] - лимит по пользователям";
     }
 
     @Override

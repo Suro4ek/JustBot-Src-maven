@@ -30,7 +30,6 @@ public class ModulePrivatka extends ModuleDiscord {
     protected void onEnable() {
         clear();
         registerListenerThis();
-        registerCommand(new PrivatkaCommand(privatkaService));
     }
 
     @Override
@@ -43,7 +42,15 @@ public class ModulePrivatka extends ModuleDiscord {
                     Category category = event.getGuild().getCategoryById(guildWrapper.getGuildEntity().getCategory_id());
                     if (category != null) {
                         Member member = event.getMember();
-                        createprivatka(category, member, event, guildWrapper);
+                        PrivatkaEntity privatkaEntity = privatkaService.findbyOwnerId(member.getIdLong(), guildWrapper);
+                        if(privatkaEntity == null) {
+                            createprivatka(category, member, event, guildWrapper);
+                        }else {
+                            VoiceChannel voiceChannel = event.getGuild().getVoiceChannelById(privatkaEntity.getVchannelid());
+                            if(voiceChannel != null) {
+                                event.getGuild().moveVoiceMember(member, voiceChannel).queue();
+                            }
+                        }
                     }
                 }
             }
@@ -52,7 +59,7 @@ public class ModulePrivatka extends ModuleDiscord {
 
     public void createprivatka(Category category, Member member,@NotNull GenericGuildEvent event, GuildWrapper guildWrapper){
         category.createVoiceChannel("Приватка: " + member.getEffectiveName()).setUserlimit(5).addMemberPermissionOverride(member.getIdLong(),
-                EnumSet.of(Permission.VIEW_CHANNEL, Permission.MANAGE_CHANNEL, Permission.MANAGE_PERMISSIONS), null).queue(voiceChannel -> {
+                EnumSet.of(Permission.VIEW_CHANNEL, Permission.VOICE_CONNECT), null).queue(voiceChannel -> {
             privatkaService.createPrivatka(voiceChannel.getIdLong(), guildWrapper, member.getIdLong());
             try {
                 event.getGuild().moveVoiceMember(member, voiceChannel).queue();
@@ -68,6 +75,11 @@ public class ModulePrivatka extends ModuleDiscord {
             PrivatkaEntity privatkaEntity = privatkaService.findbyChannelId(event.getChannelLeft().getIdLong(), guildWrapper);
             if (privatkaEntity != null) {
                 VoiceChannel voiceChannel = event.getChannelLeft();
+                if(privatkaEntity.getTextid() != 0 ){
+                    TextChannel textChannel = event.getGuild().getTextChannelById(privatkaEntity.getTextid());
+                    if(textChannel != null)
+                         textChannel.delete().queue();
+                }
                 voiceChannel.delete().queue();
                 privatkaService.delete(privatkaEntity);
             }
@@ -111,9 +123,9 @@ public class ModulePrivatka extends ModuleDiscord {
                 GuildChannel guildChannel = guild.getGuildChannelById(privatkaEntity.getVchannelid());
                 if(guildChannel != null && guildChannel.getMembers().size() == 0){
                     guildChannel.delete().queue();
+                    privatkaService.delete(privatkaEntity);
                 }
             }
-            privatkaService.delete(privatkaEntity);
         });
     }
 }

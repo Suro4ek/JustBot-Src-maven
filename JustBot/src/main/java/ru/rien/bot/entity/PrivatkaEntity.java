@@ -25,4 +25,7 @@ public class PrivatkaEntity {
     @Column(name = "owner_id", nullable = false)
     private Long ownerid;
 
+    @Column(name = "text_id", nullable = false)
+    private Long textid = 0L;
+
 }

@@ -4,6 +4,7 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import okhttp3.ConnectionPool;
 import okhttp3.OkHttpClient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,6 +57,7 @@ public class ModuleDsBot extends CommonModule {
         // Set activity (like "playing Something")
         builder.setActivity(Activity.watching("_prefix"));
         builder.enableIntents(GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_MEMBERS);
+        builder.setMemberCachePolicy(MemberCachePolicy.ALL);
         builder.setLargeThreshold(50);
         try {
             jda = builder.build().awaitReady();

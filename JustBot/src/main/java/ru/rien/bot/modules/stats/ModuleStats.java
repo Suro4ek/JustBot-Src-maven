@@ -1,11 +1,12 @@
 package ru.rien.bot.modules.stats;
 
 import net.dv8tion.jda.api.entities.Category;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.VoiceChannel;
+import net.dv8tion.jda.api.events.guild.GenericGuildEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.rien.bot.module.ModuleDiscord;
 import ru.rien.bot.objects.GuildWrapper;
@@ -58,13 +59,17 @@ public class ModuleStats extends ModuleDiscord {
 
     @Override
     public void onGuildMemberJoinEvent(@NotNull GuildMemberJoinEvent event) {
-        GuildWrapper guild = getModuleDsBot().getManager().getGuild(event.getGuild().getId());
+        getGuild(event.getGuild(), event);
+    }
+
+    private void getGuild(Guild guild2, @NotNull GenericGuildEvent event) {
+        GuildWrapper guild = getModuleDsBot().getManager().getGuild(guild2.getId());
         if (guild.getGuildEntity().isStats()) {
             Category category = guild.getGuild().getCategoryById(guild.getGuildEntity().getStatsid());
             if (category != null) {
                 VoiceChannel v1 = category.getVoiceChannels().get(1);
                 if (v1 != null) {
-                    v1.getManager().setName("Участников " + event.getGuild().getMemberCount()).queue();
+                    v1.getManager().setName("Участников " + guild2.getMemberCount()).queue();
                 }
             } else {
                 LocalDate date = LocalDate.now();
@@ -75,7 +80,7 @@ public class ModuleStats extends ModuleDiscord {
                                 .getPublicRole(), null,
                         EnumSet.of(net.dv8tion.jda.api.Permission.VOICE_CONNECT))
                         .queue(voiceChannel -> {
-                                    voiceChannel.createCopy().setName("Участников " + event.getGuild().getMemberCount()).queue();
+                                    voiceChannel.createCopy().setName("Участников " + guild2.getMemberCount()).queue();
                                 }
                         );
             }
@@ -84,27 +89,6 @@ public class ModuleStats extends ModuleDiscord {
 
     @Override
     public void onGuildMemberRemoveEvent(@NotNull GuildMemberRemoveEvent event) {
-        GuildWrapper guild = getModuleDsBot().getManager().getGuild(event.getGuild().getId());
-        if (guild.getGuildEntity().isStats()) {
-            Category category = guild.getGuild().getCategoryById(guild.getGuildEntity().getStatsid());
-            if (category != null) {
-                VoiceChannel v1 = category.getVoiceChannels().get(1);
-                if (v1 != null) {
-                    v1.getManager().setName("Участников " + event.getGuild().getMemberCount()).queue();
-                }
-            } else {
-                LocalDate date = LocalDate.now();
-                DateTimeFormatter outputFormat = DateTimeFormatter.ofPattern("MM/dd/yyyy");
-                category = guild.getGuild().createCategory("Stats").complete();
-                guild.initstats(category.getIdLong());
-                category.createVoiceChannel(date.format(outputFormat)).addPermissionOverride(guild.getGuild()
-                                .getPublicRole(), null,
-                        EnumSet.of(net.dv8tion.jda.api.Permission.VOICE_CONNECT))
-                        .queue(voiceChannel -> {
-                                    voiceChannel.createCopy().setName("Участников " + event.getGuild().getMemberCount()).queue();
-                                }
-                        );
-            }
-        }
+        getGuild(event.getGuild(), event);
     }
 }

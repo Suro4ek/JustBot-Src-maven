@@ -38,6 +38,15 @@ public class PrivatkaService {
         return privatkaRepository.findByOwneridAndGuildEntity(owner_id, guildWrapper.getGuildEntity());
     }
 
+    public void newOwner(long OwnerId, PrivatkaEntity privatkaEntity){
+        privatkaEntity.setOwnerid(OwnerId);
+        privatkaRepository.save(privatkaEntity);
+    }
+
+    public void save(PrivatkaEntity privatkaEntity){
+        privatkaRepository.save(privatkaEntity);
+    }
+
     public void createPrivatka(long channel_id, GuildWrapper guildWrapper, long owner_id){
         PrivatkaEntity privatkaEntity = new PrivatkaEntity()
                 .setGuildEntity(guildWrapper.getGuildEntity())
