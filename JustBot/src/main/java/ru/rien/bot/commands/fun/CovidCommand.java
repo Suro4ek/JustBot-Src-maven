@@ -36,15 +36,15 @@ public class CovidCommand implements Command {
                 JSONObject jsObject = response.getBody().getObject();
                 event.getChannel().sendMessage(MessageUtils.getEmbed(user)
                         .setTitle("Ковид в ").
-                                addField("Всего","**Зараженных** " + jsObject.getString("cases") + "\n" +
-                                        "**Выздоровели** " + jsObject.getString("recovered") +"\n" +
-                                        "**Умерло** " + jsObject.getString("deaths") + "\n" +
-                                        "**Население** " + jsObject.getString("population"), true).
-                                addField("Сегодня","**Зараженных** " + jsObject.getString("todayCases") + "\n" +
-                                        "**Выздоровели** " + jsObject.getString("todayRecovered") +"\n" +
-                                        "**Умерло** " + jsObject.getString("todayDeaths"), true).
-                                addField("**В критическом состоянии** ", jsObject.getString("critical"), true).
-                                addField("**Тестов** ", jsObject.getString("tests"), true).
+                                addField("Всего","**Зараженных** " + jsObject.getInt("cases") + "\n" +
+                                        "**Выздоровели** " + jsObject.getInt("recovered") +"\n" +
+                                        "**Умерло** " + jsObject.getInt("deaths") + "\n" +
+                                        "**Население** " + jsObject.getInt("population"), true).
+                                addField("Сегодня","**Зараженных** " + jsObject.getInt("todayCases") + "\n" +
+                                        "**Выздоровели** " + jsObject.getInt("todayRecovered") +"\n" +
+                                        "**Умерло** " + jsObject.getInt("todayDeaths"), true).
+                                addField("**В критическом состоянии** ", jsObject.getInt("critical")+"", true).
+                                addField("**Тестов** ", jsObject.getInt("tests")+"", true).
 //                                setFooter("`Последнее обновление `").
         build())
                         .queue();
@@ -52,7 +52,7 @@ public class CovidCommand implements Command {
                 e.printStackTrace();
             }
         }else{
-            String country = args[1];
+            String country = args[0];
             try {
                 HttpResponse<JsonNode> response = Unirest.get("https://disease.sh/v3/covid-19/countries/" + country).asJson();
                 try {
@@ -66,15 +66,15 @@ public class CovidCommand implements Command {
                 String countryimg = jsObject.getJSONObject("countryInfo").getString("flag");
                 event.getChannel().sendMessage(MessageUtils.getEmbed(user)
                 .setTitle("Ковид в " + country).
-                                addField("Всего","**Зараженных** " + jsObject.getString("cases") + "\n" +
-                                        "**Выздоровели** " + jsObject.getString("recovered") +"\n" +
-                                        "**Умерло** " + jsObject.getString("deaths") + "\n" +
-                                        "**Население** " + jsObject.getString("population"), true).
-                                addField("Сегодня","**Зараженных** " + jsObject.getString("todayCases") + "\n" +
-                                        "**Выздоровели** " + jsObject.getString("todayRecovered") +"\n" +
-                                        "**Умерло** " + jsObject.getString("todayDeaths"), true).
-                                addField("**В критическом состоянии** ", jsObject.getString("critical"), true).
-                                addField("**Тестов** ", jsObject.getString("tests"), true).
+                                addField("Всего","**Зараженных** " + jsObject.getInt("cases") + "\n" +
+                                        "**Выздоровели** " + jsObject.getInt("recovered") +"\n" +
+                                        "**Умерло** " + jsObject.getInt("deaths") + "\n" +
+                                        "**Население** " + jsObject.getInt("population"), true).
+                                addField("Сегодня","**Зараженных** " + jsObject.getInt("todayCases") + "\n" +
+                                        "**Выздоровели** " + jsObject.getInt("todayRecovered") +"\n" +
+                                        "**Умерло** " + jsObject.getInt("todayDeaths"), true).
+                                addField("**В критическом состоянии** ", jsObject.getInt("critical")+"", true).
+                                addField("**Тестов** ", jsObject.getInt("tests")+"", true).
                                 setImage(countryimg).
 //                                setFooter("`Последнее обновление `").
                                 build())
