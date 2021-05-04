@@ -9,20 +9,19 @@ import org.springframework.stereotype.Component;
 import ru.rien.bot.modules.command.Command;
 import ru.rien.bot.modules.command.CommandEvent;
 import ru.rien.bot.modules.command.CommandType;
-import ru.rien.bot.modules.messsage.Language;
 import ru.rien.bot.objects.GuildWrapper;
 import ru.rien.bot.permission.Permission;
 import ru.rien.bot.utils.MessageUtils;
 
 @Component
-public class BirdCommand implements Command {
+public class DogCommand implements Command {
 
     @Override
     public void execute(CommandEvent event) {
         try {
-            HttpResponse<JsonNode> response = Unirest.get("https://some-random-api.ml/img/birb").asJson();
+            HttpResponse<JsonNode> response = Unirest.get("https://dog.ceo/api/breeds/image/random").asJson();
             MessageEmbed embed = MessageUtils.getEmbed(event.getSender()).
-                    setImage(response.getBody().getObject().getString("link"))
+                    setImage(response.getBody().getObject().getString("message"))
                     .build();
             event.getChannel().sendMessage(embed).queue();
         } catch (UnirestException e) {
@@ -33,17 +32,17 @@ public class BirdCommand implements Command {
 
     @Override
     public String getCommand() {
-        return "bird";
+        return "dog";
     }
 
     @Override
-    public String getDescription(GuildWrapper guild) {
-        return Language.getLanguage(guild.getLang()).getMessage("BIRD_DESCRIPTION");
+    public String getDescription(GuildWrapper guildWrapper) {
+        return "Случайная собака";
     }
 
     @Override
-    public String getUsage(GuildWrapper guild) {
-        return Language.getLanguage(guild.getLang()).getMessage("BIRD_USAGE");
+    public String getUsage(GuildWrapper guildWrapper) {
+        return "{%}dog - Случайная собака";
     }
 
     @Override
@@ -53,6 +52,6 @@ public class BirdCommand implements Command {
 
     @Override
     public Permission getPermission() {
-        return Permission.BIRD_COMMAND;
+        return Permission.DOG_COMMAND;
     }
 }

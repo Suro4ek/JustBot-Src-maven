@@ -9,20 +9,19 @@ import org.springframework.stereotype.Component;
 import ru.rien.bot.modules.command.Command;
 import ru.rien.bot.modules.command.CommandEvent;
 import ru.rien.bot.modules.command.CommandType;
-import ru.rien.bot.modules.messsage.Language;
 import ru.rien.bot.objects.GuildWrapper;
 import ru.rien.bot.permission.Permission;
 import ru.rien.bot.utils.MessageUtils;
 
 @Component
-public class BirdCommand implements Command {
+public class ShibeCommand implements Command {
 
     @Override
     public void execute(CommandEvent event) {
         try {
-            HttpResponse<JsonNode> response = Unirest.get("https://some-random-api.ml/img/birb").asJson();
+            HttpResponse<JsonNode> response = Unirest.get("http://shibe.online/api/shibes").asJson();
             MessageEmbed embed = MessageUtils.getEmbed(event.getSender()).
-                    setImage(response.getBody().getObject().getString("link"))
+                    setImage(response.getBody().getArray().getString(0))
                     .build();
             event.getChannel().sendMessage(embed).queue();
         } catch (UnirestException e) {
@@ -33,17 +32,17 @@ public class BirdCommand implements Command {
 
     @Override
     public String getCommand() {
-        return "bird";
+        return "shibe";
     }
 
     @Override
-    public String getDescription(GuildWrapper guild) {
-        return Language.getLanguage(guild.getLang()).getMessage("BIRD_DESCRIPTION");
+    public String getDescription(GuildWrapper guildWrapper) {
+        return "Случайная акита парода собак";
     }
 
     @Override
-    public String getUsage(GuildWrapper guild) {
-        return Language.getLanguage(guild.getLang()).getMessage("BIRD_USAGE");
+    public String getUsage(GuildWrapper guildWrapper) {
+        return "{%}shibe - Случайная акита парода собак";
     }
 
     @Override
@@ -53,6 +52,6 @@ public class BirdCommand implements Command {
 
     @Override
     public Permission getPermission() {
-        return Permission.BIRD_COMMAND;
+        return Permission.SHIBE_COMMAND;
     }
 }

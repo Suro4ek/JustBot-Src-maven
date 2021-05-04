@@ -4,9 +4,7 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
-import netscape.javascript.JSObject;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.stereotype.Component;
@@ -26,13 +24,6 @@ public class CovidCommand implements Command {
         if(args.length == 0){
             try {
                 HttpResponse<JsonNode> response = Unirest.get("https://disease.sh/v3/covid-19/all").asJson();
-                try {
-                    response.getBody().getObject().getString("message");
-                    MessageUtils.sendErrorMessage("Страна не найдена", event.getChannel());
-                    return;
-                }catch (JSONException ignored){
-
-                }
                 JSONObject jsObject = response.getBody().getObject();
                 event.getChannel().sendMessage(MessageUtils.getEmbed(user)
                         .setTitle("Ковид").
@@ -92,12 +83,13 @@ public class CovidCommand implements Command {
 
     @Override
     public String getDescription(GuildWrapper guildWrapper) {
-        return "";
+        return "Выводит статистику по covid";
     }
 
     @Override
     public String getUsage(GuildWrapper guildWrapper) {
-        return "";
+        return "{%}covid - Статистика в мире\n" +
+                "{%}covid [Страна EN] - Статистика по стране";
     }
 
     @Override
