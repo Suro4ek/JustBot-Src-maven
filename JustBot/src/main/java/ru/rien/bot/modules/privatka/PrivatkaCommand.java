@@ -66,6 +66,12 @@ public class PrivatkaCommand implements Command {
                         voiceChannel.getManager().putPermissionOverride(guild.getGuild()
                                         .getPublicRole(), null,
                                 EnumSet.of(net.dv8tion.jda.api.Permission.VOICE_CONNECT)).queue();
+                        TextChannel textChannel = guild.getGuild().getTextChannelById(privatkaEntity.getTextid());
+                        if(textChannel != null){
+                            textChannel.getManager().putPermissionOverride(guild.getGuild()
+                                            .getPublicRole(), null,
+                                    EnumSet.of(net.dv8tion.jda.api.Permission.VIEW_CHANNEL)).queue();
+                        }
                         MessageUtils.sendAutoDeletedMessage(MessageUtils.getEmbed(sender).setDescription("\uD83D\uDD12 Приватка заблокирована").build(), TimeUnit.SECONDS.toMillis(5), channel);
                     }
                 }else{
@@ -77,6 +83,10 @@ public class PrivatkaCommand implements Command {
                     VoiceChannel voiceChannel = guild.getGuild().getVoiceChannelById(privatkaEntity.getVchannelid());
                     if(voiceChannel != null){
                         voiceChannel.getManager().removePermissionOverride(guild.getGuild().getPublicRole()).queue();
+                        TextChannel textChannel = guild.getGuild().getTextChannelById(privatkaEntity.getTextid());
+                        if(textChannel != null){
+                            textChannel.getManager().removePermissionOverride(guild.getGuild().getPublicRole()).queue();
+                        }
                         MessageUtils.sendAutoDeletedMessage(MessageUtils.getEmbed(sender).setDescription("\uD83D\uDD12 Приватка разблокирована").build(), TimeUnit.SECONDS.toMillis(5), channel);
                     }
                 }else{
@@ -112,6 +122,10 @@ public class PrivatkaCommand implements Command {
                     if (voiceChannel != null) {
                         voiceChannel.getManager().putPermissionOverride(guild.getGuild().getMember(user), EnumSet.of(net.dv8tion.jda.api.Permission.VIEW_CHANNEL,net.dv8tion.jda.api.Permission.VOICE_CONNECT),null)
                                 .queue();
+                        TextChannel textChannel = guild.getGuild().getTextChannelById(privatkaEntity.getTextid());
+                        if(textChannel != null){
+                            textChannel.getManager().putPermissionOverride(guild.getGuild().getMember(user), EnumSet.of(net.dv8tion.jda.api.Permission.VIEW_CHANNEL),null).queue();
+                        }
                         MessageUtils.sendAutoDeletedMessage(MessageUtils.getEmbed(sender).setDescription("Пользователию " + userString+ " разрешено заходить в приватку").build(), TimeUnit.SECONDS.toMillis(5), channel);
                     }
                 } else {
@@ -156,6 +170,10 @@ public class PrivatkaCommand implements Command {
                     if (voiceChannel != null) {
                         voiceChannel.getManager().putPermissionOverride(guild.getGuild().getMember(user), null,EnumSet.of(net.dv8tion.jda.api.Permission.VIEW_CHANNEL,net.dv8tion.jda.api.Permission.VOICE_CONNECT))
                                 .queue();
+                        TextChannel textChannel = guild.getGuild().getTextChannelById(privatkaEntity.getTextid());
+                        if(textChannel != null){
+                            textChannel.getManager().putPermissionOverride(guild.getGuild().getMember(user), null, EnumSet.of(net.dv8tion.jda.api.Permission.VIEW_CHANNEL)).queue();
+                        }
                         MessageUtils.sendAutoDeletedMessage(MessageUtils.getEmbed(sender).setDescription("Пользователию " + userString+ " запрещено заходить в приватку").build(), TimeUnit.SECONDS.toMillis(5), channel);
                     }
                 } else {

@@ -123,6 +123,10 @@ public class ModulePrivatka extends ModuleDiscord {
                 GuildChannel guildChannel = guild.getGuildChannelById(privatkaEntity.getVchannelid());
                 if(guildChannel != null && guildChannel.getMembers().size() == 0){
                     guildChannel.delete().queue();
+                    TextChannel textChannel = guild.getTextChannelById(privatkaEntity.getTextid());
+                    if(textChannel != null){
+                        textChannel.delete().queue();
+                    }
                     privatkaService.delete(privatkaEntity);
                 }
             }
