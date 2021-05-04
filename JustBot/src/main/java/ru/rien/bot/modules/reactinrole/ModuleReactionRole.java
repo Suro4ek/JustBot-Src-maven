@@ -35,7 +35,7 @@ public class ModuleReactionRole extends ModuleDiscord {
             Guild guild = event.getGuild();
             Long message_id = event.getMessageIdLong();
             GuildWrapper guildWrapper = getModuleDsBot().getManager().getGuild(guild.getId());
-            if (guildWrapper.getReactionLoader().getReactionEntity(message_id) != null) {
+            if (guildWrapper.getReactionLoader().getReactionEntities().get(message_id) != null) {
                 String emojiAsText = "";
                 if(event.getReactionEmote().isEmote()) {
                     emojiAsText = event.getReactionEmote().getEmote().getAsMention();
@@ -70,7 +70,7 @@ public class ModuleReactionRole extends ModuleDiscord {
             Guild guild = event.getGuild();
             Long message_id = event.getMessageIdLong();
             GuildWrapper guildWrapper = getModuleDsBot().getManager().getGuild(guild.getId());
-            if (guildWrapper.getReactionLoader().getReactionEntity(message_id) != null) {
+            if (guildWrapper.getReactionLoader().getReactionEntities().get(message_id) != null) {
                 String emojiAsText = "";
                 if(event.getReactionEmote().isEmote()) {
                     emojiAsText = event.getReactionEmote().getEmote().getAsMention();
