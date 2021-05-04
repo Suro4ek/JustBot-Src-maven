@@ -111,7 +111,7 @@ public class PrivatkaCommand implements Command {
             if(args[0].equalsIgnoreCase("permit") || args[0].equalsIgnoreCase("allow")){
                 String userString = args[1];
                 User user = GuildUtils.getUser(userString, guild.getGuildId());
-                if (user == null || guild.getGuild().getMember(user) == null) {
+                if (user == null) {
                     MessageUtils.sendErrorMessage("Пользователь не найден", channel);
                     return;
                 }

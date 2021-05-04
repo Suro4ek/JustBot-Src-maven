@@ -209,7 +209,7 @@ public class GuildUtils {
                 if (guild == null) {
                     tmp = Getters.getUserById(l);
                 } else {
-                    Member temMember = guild.getMemberById(l);
+                    Member temMember = guild.retrieveMemberById(l).complete();
                     if (temMember != null) {
                         tmp = temMember.getUser();
                     }
