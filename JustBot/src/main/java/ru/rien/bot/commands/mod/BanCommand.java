@@ -1,5 +1,6 @@
 package ru.rien.bot.commands.mod;
 
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import org.springframework.stereotype.Component;
 import ru.rien.bot.modules.command.Command;
@@ -12,6 +13,7 @@ import ru.rien.bot.permission.Permission;
 import ru.rien.bot.utils.GuildUtils;
 import ru.rien.bot.utils.MessageUtils;
 
+import javax.xml.soap.Text;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -34,6 +36,10 @@ public class BanCommand implements Command {
         User banned_by = event.getSender();
         String[] args = event.getArgs();
         GuildWrapper guild = event.getGuild();
+        if(args.length == 0){
+            MessageUtils.sendUsage(this,guild, event.getChannel(), event.getSender(),args);
+            return;
+        }
         event.checkSizeArguments(3);
         String userString = args[0];
         User banned = GuildUtils.getUser(userString, guild.getGuildId());
@@ -60,12 +66,12 @@ public class BanCommand implements Command {
             } else {
                 Long type = timeValue.get(c);
                 if (type == null) {
-                    this.errorTime(value.toString() + c, sender);
+                    this.errorTime(value.toString() + c, sender, event.getChannel());
                     throw new CommandException();
                 }
 
                 if (value.length() == 0) {
-                    this.errorTime("?" + c, sender);
+                    this.errorTime("?" + c, sender, event.getChannel());
                     throw new CommandException();
                 }
 
@@ -75,10 +81,10 @@ public class BanCommand implements Command {
         }
 
         if (value.length() != 0) {
-            this.errorTime(value.toString() + "?", sender);
+            this.errorTime(value.toString() + "?", sender, event.getChannel());
             throw new CommandException();
         } else if (time == 0L) {
-            this.errorTime(data, sender);
+            this.errorTime(data, sender, event.getChannel());
             throw new CommandException();
         } else {
             return time;
@@ -97,7 +103,7 @@ public class BanCommand implements Command {
 
     @Override
     public String getUsage(GuildWrapper guildWrapper) {
-        return "{%}ban - забанить пользователя";
+        return "{%}ban [пользователь] [1s/1m/1h/1d] [причина] - забанить пользователя";
     }
 
     @Override
@@ -110,8 +116,8 @@ public class BanCommand implements Command {
         return Permission.BAN_COMMAND;
     }
 
-    private void errorTime(String data, User sender) {
-//        Message.sendMessage(sender, "время_некорректно", "{value}", data);
+    private void errorTime(String data, User sender, TextChannel channel) {
+        MessageUtils.sendErrorMessage("Время задано не корректно", channel);
     }
 
     static {

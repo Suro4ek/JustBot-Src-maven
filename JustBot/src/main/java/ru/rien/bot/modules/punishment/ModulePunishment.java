@@ -45,4 +45,7 @@ public class ModulePunishment extends ModuleDiscord {
                 delaymilliseconds,cause);
     }
 
+    public void kick(User kicked, User kicked_by, GuildWrapper guildWrapper, String cause) {
+        guildWrapper.getGuild().kick(kicked.getIdLong()+"").queue();
+    }
 }
