@@ -18,9 +18,12 @@ public class InfoCommand implements Command {
         GuildWrapper guild = event.getGuild();
         User user = event.getSender();
         //TODO Пофиксить имя создатель сервера
-        MessageUtils.sendInfoMessage("Создатель сервера: " + guild.getGuild().getOwner().getNickname() + "\n"
+        guild.getGuild().retrieveOwner().queue(member -> {
+            MessageUtils.sendInfoMessage("Создатель сервера: " + member.getEffectiveName() + "\n"
                     +"Участников: " + guild.getGuild().getMembers().size() + "\n"
                     +"Регион: " + guild.getGuild().getRegion().getName(), channel,user);
+        });
+
 
     }
 
