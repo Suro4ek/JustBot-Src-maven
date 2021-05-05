@@ -14,6 +14,7 @@ public enum Permission {
     // Категории
     CAGEGORY_GENERAL("category.general", false, CommandType.GENERAL),
     CAGEGORY_MUSIC("category.music", false, CommandType.MUSIC),
+    CAGEGORY_RANDOM("category.random", false, CommandType.RANDOM),
     // Валюта
     CONVERT_COMMAND("convert", true),
     CURRENCY_COMMAND("currency", true),

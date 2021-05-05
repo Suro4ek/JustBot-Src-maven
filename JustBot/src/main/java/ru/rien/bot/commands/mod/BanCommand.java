@@ -13,7 +13,6 @@ import ru.rien.bot.permission.Permission;
 import ru.rien.bot.utils.GuildUtils;
 import ru.rien.bot.utils.MessageUtils;
 
-import javax.xml.soap.Text;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
