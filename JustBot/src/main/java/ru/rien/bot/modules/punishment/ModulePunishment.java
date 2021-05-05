@@ -40,6 +40,7 @@ public class ModulePunishment extends ModuleDiscord {
     }
 
     public void ban(User banned, User banned_by, GuildWrapper guildWrapper,String cause, long delaymilliseconds){
+        guildWrapper.getGuild().ban(banned,(int)(delaymilliseconds/1000)/60/60/24,cause).queue();
         banservice.ban(banned_by.getIdLong(), banned.getIdLong(),guildWrapper.getGuildEntity(),
                 delaymilliseconds,cause);
     }
