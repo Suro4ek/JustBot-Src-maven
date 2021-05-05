@@ -35,9 +35,14 @@ public class BanCommand implements Command {
         String[] args = event.getArgs();
         GuildWrapper guild = event.getGuild();
         event.checkSizeArguments(3);
-        User banned = GuildUtils.getUser(args[1], guild.getGuildId());
-        String cause = args[3];
-        String experies = args[2];
+        String userString = args[0];
+        User banned = GuildUtils.getUser(userString, guild.getGuildId());
+        if (banned == null) {
+            MessageUtils.sendErrorMessage("Пользователь не найден", event.getChannel());
+            return;
+        }
+        String cause = args[2];
+        String experies = args[1];
         long time = this.getTime(experies, event.getSender(), event);
         if (time >= 1L && time <= 315360000000L) {
             modulePunishment.ban(banned_by, banned, guild, cause, time);

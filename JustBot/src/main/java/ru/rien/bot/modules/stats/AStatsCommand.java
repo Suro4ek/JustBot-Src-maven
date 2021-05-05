@@ -1,8 +1,6 @@
 package ru.rien.bot.modules.stats;
 
-import com.google.common.base.Enums;
 import net.dv8tion.jda.api.entities.Category;
-import net.dv8tion.jda.api.entities.IPermissionHolder;
 import org.springframework.stereotype.Component;
 import ru.rien.bot.modules.command.Command;
 import ru.rien.bot.modules.command.CommandEvent;
