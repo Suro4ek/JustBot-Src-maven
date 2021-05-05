@@ -31,11 +31,9 @@ public class ModulePunishment extends ModuleDiscord {
                 banEntityList.forEach(banEntity -> {
                     Guild guild = getModuleDsBot().getJda().getGuildById(banEntity.getGuildEntity().getGuildid());
                     if(guild != null) {
-                        guild.retrieveMemberById(banEntity.getBanned()).queue(member -> {
-                            guild.unban(member.getUser()).queue();
-                        });
+                        guild.unban(banEntity.getBanned()+"").queue();
+                        banservice.delete(banEntity);
                     }
-                    banservice.delete(banEntity);
                 });
             }
         }.repeat(0, 1000*600);
