@@ -20,7 +20,7 @@ public class InfoCommand implements Command {
         //TODO Пофиксить имя создатель сервера
         guild.getGuild().retrieveOwner().queue(member -> {
             MessageUtils.sendInfoMessage("Создатель сервера: " + member.getEffectiveName() + "\n"
-                    +"Участников: " + guild.getGuild().getMembers().size() + "\n"
+                    +"Участников: " + guild.getGuild().getMemberCount() + "\n"
                     +"Регион: " + guild.getGuild().getRegion().getName(), channel,user);
         });
 

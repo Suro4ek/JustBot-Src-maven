@@ -123,6 +123,7 @@ public enum Permission {
     LANG_COMMAND("lang", true),
     COVID_COMMAND("covid", true),
     AVATAR_OTHER("avatar.other", false),
+    ZXC_COMMAND("zxc", true),
     REMIND_COMMAND("remind", true),
     TAGS_COMMAND("tags", true),
     TAGS_ADMIN("tags.admin", false),
