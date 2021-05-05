@@ -31,7 +31,9 @@ public class ModulePunishment extends ModuleDiscord {
                 banEntityList.forEach(banEntity -> {
                     Guild guild = getModuleDsBot().getJda().getGuildById(banEntity.getGuildEntity().getGuildid());
                     if(guild != null) {
-                        guild.unban(User.fromId(banEntity.getBanned())).queue();
+                        guild.retrieveMemberById(banEntity.getBanned()).queue(member -> {
+                            guild.unban(member.getUser()).queue();
+                        });
                     }
                     banservice.delete(banEntity);
                 });
@@ -39,7 +41,7 @@ public class ModulePunishment extends ModuleDiscord {
         }.repeat(0, 1000*600);
     }
 
-    public void ban(User banned, User banned_by, GuildWrapper guildWrapper,String cause, long delaymilliseconds){
+    public void ban(User banned_by, User banned, GuildWrapper guildWrapper,String cause, long delaymilliseconds){
         guildWrapper.getGuild().ban(banned,(int)(delaymilliseconds/1000)/60/60/24,cause).queue();
         banservice.ban(banned_by.getIdLong(), banned.getIdLong(),guildWrapper.getGuildEntity(),
                 delaymilliseconds,cause);
