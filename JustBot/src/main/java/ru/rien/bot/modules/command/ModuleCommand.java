@@ -125,7 +125,7 @@ public class ModuleCommand extends ModuleDiscord {
 
         handleSpamDetection(event, guild);
 
-        if (handleMissingPermission(cmd,guild, event)) return;
+        if (handleMissingPermission(cmd,guild, event, event.getMember())) return;
 
         if (guild.isBlocked()) return;
 
@@ -142,9 +142,9 @@ public class ModuleCommand extends ModuleDiscord {
      * @param e   The event this came from.
      * @return If the user has permission to run the command, this will return <b>true</b> if they do NOT have permission.
      */
-    private boolean handleMissingPermission(Command cmd,GuildWrapper guild, GuildMessageReceivedEvent e) {
+    private boolean handleMissingPermission(Command cmd,GuildWrapper guild, GuildMessageReceivedEvent e, Member member) {
             if (cmd.getPermission() != null) {
-                if (!cmd.getPermissions(e.getChannel()).hasPermission(e.getMember(), cmd.getPermission())) {
+                if (!cmd.getPermissions(e.getChannel()).hasPermission(member, cmd.getPermission())) {
                     MessageUtils.sendAutoDeletedMessage(MessageUtils.getEmbed(e.getAuthor()).setColor(Color.red)
                                     .setDescription(
                                             guild.getMessage("NEED_PERMISSION",
@@ -156,7 +156,7 @@ public class ModuleCommand extends ModuleDiscord {
             }
 
             return !cmd.getPermissions(e.getChannel()).hasPermission(
-                    e.getMember(),
+                    member,
                     ru.rien.bot.permission.Permission.getPermission(cmd.getType())
             ) && cmd.getPermission() == null;
     }
