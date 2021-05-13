@@ -25,11 +25,14 @@ public class VoteCommand implements Command {
         GuildWrapper guild = event.getGuild();
         TextChannel channel = event.getChannel();
         String[] args = event.getArgs();
-        if(steamService.checkValid(user.getIdLong(),guild.getGuildEntity())){
-            steamService.createSteam(user.getIdLong(), guild);
+        SteamEntity steamEntity = steamService.findDiscordAndGuild(guild, user.getIdLong());
+        if(steamEntity == null){
+            steamService.createSteam(user.getIdLong(),guild);
         }
         if(args[0].equalsIgnoreCase("start")){
-            SteamEntity steamEntity = steamService.findDiscordAndGuild(guild, user.getIdLong());
+            if(steamEntity != null){
+                return;
+            }
             if(steamEntity.getSteamid() == 0){
                 MessageUtils.sendErrorMessage("У вас не привязан стим", channel);
                 return;
