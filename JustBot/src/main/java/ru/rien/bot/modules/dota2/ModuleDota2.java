@@ -49,6 +49,7 @@ public class ModuleDota2 extends ModuleDiscord {
                                 } else {
                                     textChannel.sendMessage("Матч " + jsonObject.getLong("match_id") + " победила тьма").queue();
                                 }
+                                matchscan.remove(vote);
                             }
 
                         } catch (UnirestException e) {
@@ -56,7 +57,7 @@ public class ModuleDota2 extends ModuleDiscord {
                         }
 //                        matchscan.remove(aLong,vote);
                     }
-                    matchscan.remove(vote);
+
                 });
             }
         }.repeat(0,   5*600* 1000);
