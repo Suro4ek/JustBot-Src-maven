@@ -27,8 +27,12 @@ public class SteamLinkCommand implements Command {
             MessageUtils.sendUsage(this, guild, event.getChannel(), event.getSender(), args);
             return;
         }
+
         try {
             Long steam_id = Long.parseLong(args[0]);
+            if(!steamService.checkValid(user.getIdLong(),guild.getGuildEntity())){
+                return;
+            }
             steamService.createSteam(steam_id, user.getIdLong(), guild);
             MessageUtils.sendInfoMessage("Аккаунт привязан",channel,user);
         } catch (NumberFormatException e) {

@@ -30,7 +30,7 @@ public class VoteCommand implements Command {
             steamService.createSteam(user.getIdLong(),guild);
         }
         if(args[0].equalsIgnoreCase("start")){
-            if(steamEntity != null){
+            if(steamEntity == null){
                 return;
             }
             if(steamEntity.getSteamid() == 0){
