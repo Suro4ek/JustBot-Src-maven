@@ -74,7 +74,6 @@ public class ModuleDsBot extends CommonModule {
     @Override
     protected void onDisable() {
         manager.getGuilds().asMap().forEach((s, wrapper) ->{
-            System.out.println(wrapper.getGuild().getName());
             manager.saveGuild(s,wrapper);
         });
     }

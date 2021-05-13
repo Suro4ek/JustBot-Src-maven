@@ -116,6 +116,7 @@ public enum Permission {
     ROLL_COMMAND("roll", true),
     // Разное
     URLSHOT_COMMAND("urlshot", true),
+    VOTEG_COMAMAND("voteg", true),
     QRCODE_COMMAND("qrcode",true),
     PNG_COMAMND("png",true),
     SKIN_COMMAND("skin",true),
@@ -124,6 +125,7 @@ public enum Permission {
     COVID_COMMAND("covid", true),
     AVATAR_OTHER("avatar.other", false),
     ZXC_COMMAND("zxc", true),
+    STEAM_COMMAND("steam", true),
     REMIND_COMMAND("remind", true),
     TAGS_COMMAND("tags", true),
     TAGS_ADMIN("tags.admin", false),
