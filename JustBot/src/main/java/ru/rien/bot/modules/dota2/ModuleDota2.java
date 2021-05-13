@@ -59,6 +59,6 @@ public class ModuleDota2 extends ModuleDiscord {
                     matchscan.remove(vote);
                 });
             }
-        }.repeat(0,   2* 1000);
+        }.repeat(0,   5*600* 1000);
     }
 }
