@@ -1,5 +1,6 @@
 package ru.rien.bot.modules.dota2;
 
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,9 @@ import ru.rien.bot.objects.GuildWrapper;
 import ru.rien.bot.permission.Permission;
 import ru.rien.bot.services.SteamService;
 import ru.rien.bot.utils.MessageUtils;
+
+import javax.xml.soap.Text;
+import java.util.concurrent.TimeUnit;
 
 @Component
 public class VoteCommand implements Command {
@@ -40,9 +44,16 @@ public class VoteCommand implements Command {
             Vote vote = new Vote(guild.getGuildIdLong(), channel.getIdLong());
             ModuleDota2.matchscan.put(vote,steamEntity.getSteamid());
             guild.setVote(vote);
-            MessageUtils.sendInfoMessage("Запущено голосование на победу:\n" +
-                    "!vote win - на победу\n" +
-                    "!vote lose - на порожение\n",channel,user);
+            MessageEmbed embed = MessageUtils.getEmbed(user)
+                    .setDescription("Запущено голосование на победу:\n" +
+                            "!vote win - на победу\n" +
+                            "!vote lose - на порожение\n")
+                    .build();
+            channel.sendMessage(embed).queueAfter(2, TimeUnit.SECONDS,message -> {
+                TextChannel textChannel1 = message.getTextChannel();
+                guild.setVote(null);
+                MessageUtils.sendInfoMessage("Голосование закончилось", textChannel1, null);
+            });
         }else if(args[0].equalsIgnoreCase("win")){
             if(guild.getVote() == null){
                 MessageUtils.sendErrorMessage("Голосование не началось", channel);
