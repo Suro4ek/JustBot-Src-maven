@@ -47,8 +47,9 @@ public class VoteCommand implements Command {
                             "!vote win - на победу\n" +
                             "!vote lose - на порожение\n")
                     .build();
-            channel.sendMessage(embed).queueAfter(2, TimeUnit.MINUTES,message -> {
-                TextChannel textChannel1 = message.getTextChannel();
+            channel.sendMessage(embed).queue();
+            channel.sendTyping().queueAfter(2, TimeUnit.MINUTES,message -> {
+                TextChannel textChannel1 = channel;
                 guild.setVote(null);
                 MessageUtils.sendInfoMessage("Голосование закончилось", textChannel1, null);
             });
