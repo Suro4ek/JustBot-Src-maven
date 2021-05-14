@@ -38,7 +38,7 @@ public class ModuleDota2 extends ModuleDiscord {
                     GuildWrapper guildWrapper = getModuleDsBot().getManager().getGuildNoCache(guildid+"");
                     TextChannel textChannel = guildWrapper.getGuild().getTextChannelById(vote.getChannelid());
                     long vote_time = vote.start_time/1000;
-                    if(new Date().getTime()/1000 - vote_time > 3600){
+                    if(new Date().getTime()/1000 - vote_time > 3900){
                         matchscan.remove(vote);
                         return;
                     }

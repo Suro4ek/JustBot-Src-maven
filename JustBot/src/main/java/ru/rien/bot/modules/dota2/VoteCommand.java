@@ -13,8 +13,6 @@ import ru.rien.bot.objects.GuildWrapper;
 import ru.rien.bot.permission.Permission;
 import ru.rien.bot.services.SteamService;
 import ru.rien.bot.utils.MessageUtils;
-
-import javax.xml.soap.Text;
 import java.util.concurrent.TimeUnit;
 
 @Component
