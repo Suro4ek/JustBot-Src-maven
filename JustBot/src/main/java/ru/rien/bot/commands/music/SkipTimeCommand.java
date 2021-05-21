@@ -39,15 +39,19 @@ public class SkipTimeCommand implements Command {
         PlayerManager manager = moduleDsBot.getMusicManager();
         if (manager.getPlayer(channel.getGuild().getId()).getPlayingTrack() != null) {
             Track track = manager.getPlayer(channel.getGuild().getId()).getPlayingTrack();
-            String experies = args[0];
-            long time = this.getTime(experies, event.getSender(), event);
-            if(time + track.getTrack().getPosition() < track.getTrack().getDuration()) {
-                track.getTrack().setPosition(track.getTrack().getPosition() + time);
-                MessageUtils.sendInfoMessage("Пропущено на "+experies,event.getChannel(),sender);
-            }else{
-                manager.getPlayer(guild.getGuildId()).skip();
-                MessageUtils.sendInfoMessage("Пропущена музыка", event.getChannel(), sender);
+            if (!track.getTrack().getInfo().isStream) {
+                String experies = args[0];
+                long time = this.getTime(experies, event.getSender(), event);
+                if (time + track.getTrack().getPosition() < track.getTrack().getDuration()) {
+                    track.getTrack().setPosition(track.getTrack().getPosition() + time);
+                    MessageUtils.sendInfoMessage("Пропущено на " + experies, event.getChannel(), sender);
+                } else {
+                    manager.getPlayer(guild.getGuildId()).skip();
+                    MessageUtils.sendInfoMessage("Пропущена музыка", event.getChannel(), sender);
+                }
             }
+        }else{
+            MessageUtils.sendErrorMessage("Нельзя пропустить стрим", event.getChannel(),sender);
         }
     }
 
