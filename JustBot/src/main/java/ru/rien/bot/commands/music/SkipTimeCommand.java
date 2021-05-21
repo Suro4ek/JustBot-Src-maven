@@ -49,9 +49,11 @@ public class SkipTimeCommand implements Command {
                     manager.getPlayer(guild.getGuildId()).skip();
                     MessageUtils.sendInfoMessage("Пропущена музыка", event.getChannel(), sender);
                 }
+            }else {
+                MessageUtils.sendErrorMessage("Нельзя пропустить стрим", event.getChannel(),sender);
             }
         }else{
-            MessageUtils.sendErrorMessage("Нельзя пропустить стрим", event.getChannel(),sender);
+            MessageUtils.sendErrorMessage("Ничего не играет", event.getChannel(), sender);
         }
     }
 
