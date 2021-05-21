@@ -65,6 +65,7 @@ public enum Permission {
     // Музыка
     DELETE_COMMAND("playlist.delete", false),
     JOIN_COMMAND("join", true),
+    SKIP_TIME_COMMAND("skip.time",true),
     JOIN_OTHER("join.other", false),
     LEAVE_COMMAND("leave", true),
     LEAVE_OTHER("leave.other", false),
