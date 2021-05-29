@@ -12,9 +12,10 @@ public enum Permission {
     // Все права
     ALL_PERMISSIONS("*"),
     // Категории
-    CAGEGORY_GENERAL("category.general", false, CommandType.GENERAL),
-    CAGEGORY_MUSIC("category.music", false, CommandType.MUSIC),
-    CAGEGORY_RANDOM("category.random", false, CommandType.RANDOM),
+    CATEGORY_GENERAL("category.general", false, CommandType.GENERAL),
+    CATEGORY_MUSIC("category.music", false, CommandType.MUSIC),
+    CATEGORY_RANDOM("category.random", false, CommandType.RANDOM),
+    CATEGORY_ANIME("category.anime", false, CommandType.ANIME),
     // Валюта
     CONVERT_COMMAND("convert", true),
     CURRENCY_COMMAND("currency", true),
