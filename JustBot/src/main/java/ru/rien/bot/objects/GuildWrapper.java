@@ -36,6 +36,7 @@ public class GuildWrapper {
     private long creeate_voice_channel = 0;
     private boolean songnick = false;
     private Long nswf = null;
+    private Long anime = null;
     // Should be moved to their own manager.
     private boolean blocked = false;
     @Getter
@@ -55,6 +56,15 @@ public class GuildWrapper {
 
     public ReactionLoader getReactionLoader() {
         return reactionLoader;
+    }
+
+    public Long getAnime() {
+        return anime;
+    }
+
+    public void setAnime(Long anime) {
+        this.anime = anime;
+        this.guildEntity.setAnimeid(nswf);
     }
 
     public void setNswf(Long nswf) {

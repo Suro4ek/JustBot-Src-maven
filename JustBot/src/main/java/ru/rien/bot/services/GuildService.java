@@ -70,6 +70,7 @@ public class GuildService {
         guildEntity1.setCreate_channel_id(guildEntity.getCreate_channel_id());
         guildEntity1.setCategory_id(guildEntity.getCategory_id());
         guildEntity1.setStatsid(guildEntity.getStatsid());
+        guildEntity1.setAnimeid(guildEntity.getAnimeid());
         guildEntity1.setStats(guildEntity.isStats());
         guildReposytory.save(guildEntity1);
     }

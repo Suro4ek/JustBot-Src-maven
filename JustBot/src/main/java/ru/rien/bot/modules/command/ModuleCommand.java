@@ -130,6 +130,7 @@ public class ModuleCommand extends ModuleDiscord {
         if (guild.isBlocked()) return;
 
         if(cmd.getType().equals(CommandType.NSWF) && guild.getNswf() != null && guild.getNswf() != event.getChannel().getIdLong()) return;
+        if(cmd.getType().equals(CommandType.ANIME) && guild.getAnime() != null && guild.getAnime() != event.getChannel().getIdLong()) return;
 
         dispatchCommand(cmd, args, event, guild);
     }

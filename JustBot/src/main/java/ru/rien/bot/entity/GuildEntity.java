@@ -42,6 +42,9 @@ public class GuildEntity {
     @Column(name = "nsfwid", nullable = true)
     private Long nswfid;
 
+    @Column(name = "animeid", nullable = true)
+    private Long animeid;
+
     @Column(name = "category_id", nullable = false)
     private long category_id = 0;
 

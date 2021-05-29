@@ -17,6 +17,7 @@ import ru.rien.bot.utils.MessageUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @Component
@@ -26,8 +27,10 @@ public class RandomAnime implements Command {
         User user = event.getSender();
         TextChannel channel = event.getChannel();
         try {
+            Random random  = new Random();
+            int randomInt = random.nextInt(47997) + 1;
             HttpResponse<JsonNode> jsonResponse
-                    = Unirest.get("https://api.jikan.moe/v3/anime/1/")
+                    = Unirest.get("https://api.jikan.moe/v3/anime/"+randomInt+"/")
                     .header("accept", "application/json")
                     .asJson();
             JsonNode jsonNode = jsonResponse.getBody();

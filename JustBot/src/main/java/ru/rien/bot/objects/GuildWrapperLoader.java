@@ -37,6 +37,7 @@ public class GuildWrapperLoader extends CacheLoader<String, GuildWrapper> {
             wrapper.setGuildEntity(guildEntity);
             wrapper.setPrefix(guildEntity.getPrefix());
             wrapper.setNswf(guildEntity.getNswfid());
+            wrapper.setAnime(guildEntity.getAnimeid());
             if(guildEntity.getBlockcommads() != null) {
                 for (String cmd : guildEntity.getBlockcommads()) {
                     Command command = ModuleCommand.getInstance().getCommand(cmd, null);
