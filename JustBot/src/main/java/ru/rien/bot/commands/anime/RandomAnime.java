@@ -37,7 +37,6 @@ public class RandomAnime implements Command {
             if(jsonNode.getObject().isNull("status") || !(jsonNode.getObject().get("status") instanceof Number)) {
                 String title_jp = jsonNode.getObject().getString("title_japanese");
                 String rating = jsonNode.getObject().getString("rating");
-                String premiered = jsonNode.getObject().getString("premiered");
                 String title_en = jsonNode.getObject().getString("title");
                 String type = jsonNode.getObject().getString("type");
                 double score = jsonNode.getObject().getDouble("score");
@@ -51,7 +50,6 @@ public class RandomAnime implements Command {
                         .setTitle("Случайное аниме").
                                 addField("Название",  title_en+"("+title_jp+")", false).
                                 addField("Возраст",  rating, false).
-                                addField("Премьера",  premiered, false).
                                 addField("Тип",  type, false).
                                 addField("Рейтинг",  score+"/10", false).
                                 addField("Жанры",  genres.stream().collect(Collectors.joining(",")), false).
