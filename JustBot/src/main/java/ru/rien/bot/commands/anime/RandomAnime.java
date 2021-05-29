@@ -28,7 +28,7 @@ public class RandomAnime implements Command {
         TextChannel channel = event.getChannel();
         try {
             Random random  = new Random();
-            int randomInt = random.nextInt(47997) + 1;
+            int randomInt = random.nextInt(999) + 1;
             HttpResponse<JsonNode> jsonResponse
                     = Unirest.get("https://api.jikan.moe/v3/anime/"+randomInt+"/")
                     .header("accept", "application/json")
