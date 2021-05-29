@@ -23,11 +23,14 @@ import java.util.Map;
 @Component
 public class SkipTimeCommand implements Command {
 
-    @Autowired
-    private static ModuleDsBot moduleDsBot = ModuleDsBot.getInstance();
+    private  ModuleDsBot moduleDsBot;
 
     private static final Map<Character, Long> timeValue = new HashMap<>();
     private static final List<Character> numbers = Arrays.asList('0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
+
+    public SkipTimeCommand(ModuleDsBot moduleDsBot) {
+        this.moduleDsBot = moduleDsBot;
+    }
 
     @Override
     public void execute(CommandEvent event) {
@@ -67,12 +70,12 @@ public class SkipTimeCommand implements Command {
             } else {
                 Long type = timeValue.get(c);
                 if (type == null) {
-                    this.errorTime(value.toString() + c, sender, event.getChannel());
+                    this.errorTime( event.getChannel());
                     throw new CommandException();
                 }
 
                 if (value.length() == 0) {
-                    this.errorTime("?" + c, sender, event.getChannel());
+                    this.errorTime(event.getChannel());
                     throw new CommandException();
                 }
 
@@ -82,17 +85,17 @@ public class SkipTimeCommand implements Command {
         }
 
         if (value.length() != 0) {
-            this.errorTime(value.toString() + "?", sender, event.getChannel());
+            this.errorTime( event.getChannel());
             throw new CommandException();
         } else if (time == 0L) {
-            this.errorTime(data, sender, event.getChannel());
+            this.errorTime(event.getChannel());
             throw new CommandException();
         } else {
             return time;
         }
     }
 
-    private void errorTime(String data, User sender, TextChannel channel) {
+    private void errorTime(TextChannel channel) {
         MessageUtils.sendErrorMessage("Время задано не корректно", channel);
     }
 
@@ -104,12 +107,12 @@ public class SkipTimeCommand implements Command {
 
     @Override
     public String getDescription(GuildWrapper guildWrapper) {
-        return "";
+        return "пропустает время на + [1s/1m/1h/1d]";
     }
 
     @Override
     public String getUsage(GuildWrapper guildWrapper) {
-        return "";
+        return "!skiptime [1s/1m/1h/1d] - пропустить время музыки";
     }
 
     @Override

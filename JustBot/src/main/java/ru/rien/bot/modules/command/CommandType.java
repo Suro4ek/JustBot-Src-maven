@@ -11,6 +11,7 @@ public enum CommandType {
     NSWF("Hmm",true),
     ADMIN("Админ",false),
     MUSIC("Музыкальные",true),
+    ANIME("Аниме", true),
     MODERATION("Модерация", false),
     INFORMATIONAL("Информационные",false);
 

@@ -26,10 +26,12 @@ import ru.rien.bot.utils.objects.ButtonGroup;
 @Component
 public class SongCommand implements Command {
 
-    @Autowired
     private static ModuleDsBot moduleDsBot = ModuleDsBot.getInstance();
-    @Autowired
-    private ModuleCommand moduleCommand;
+    private final ModuleCommand moduleCommand;
+
+    public SongCommand(ModuleCommand moduleCommand) {
+        this.moduleCommand = moduleCommand;
+    }
 
     @Override
     public void execute(CommandEvent event) {

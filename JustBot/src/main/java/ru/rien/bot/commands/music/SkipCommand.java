@@ -31,8 +31,11 @@ import java.util.concurrent.TimeUnit;
 public class SkipCommand implements Command {
     private static final UUID skipUUID = UUID.randomUUID();
 
-    @Autowired
-    private ModuleDsBot moduleDsBot;
+    private final ModuleDsBot moduleDsBot;
+
+    public SkipCommand(ModuleDsBot moduleDsBot) {
+        this.moduleDsBot = moduleDsBot;
+    }
 
     @Override
     public void execute(CommandEvent event) {

@@ -17,7 +17,6 @@ public class InfoCommand implements Command {
         TextChannel channel = event.getChannel();
         GuildWrapper guild = event.getGuild();
         User user = event.getSender();
-        //TODO Пофиксить имя создатель сервера
         guild.getGuild().retrieveOwner().queue(member -> {
             MessageUtils.sendInfoMessage("Создатель сервера: " + member.getEffectiveName() + "\n"
                     +"Участников: " + guild.getGuild().getMemberCount() + "\n"

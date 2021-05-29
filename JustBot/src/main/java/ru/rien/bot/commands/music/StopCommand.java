@@ -13,8 +13,11 @@ import ru.rien.bot.permission.Permission;
 @Component
 public class StopCommand implements Command {
 
-    @Autowired
-    private ModuleDsBot moduleDsBot;
+    private final ModuleDsBot moduleDsBot;
+
+    public StopCommand(ModuleDsBot moduleDsBot) {
+        this.moduleDsBot = moduleDsBot;
+    }
 
     @Override
     public void execute(CommandEvent event) {

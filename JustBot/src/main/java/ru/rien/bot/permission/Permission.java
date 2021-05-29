@@ -91,6 +91,8 @@ public enum Permission {
     SONGNICK_COMMAND("songnick", false),
     STOP_COMMAND("stop", false),
     KILL_COMMAND("kill", false),
+    //Аниме
+    RANDOMANIME_COMMAND("random_anime", true),
     //Рандомные
     ALPACA_COMMAND("alpaca", true),
     KOALA_COMMAND("koala", true),

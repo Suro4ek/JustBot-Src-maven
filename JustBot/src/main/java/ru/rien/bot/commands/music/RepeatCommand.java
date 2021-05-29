@@ -19,6 +19,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 @Component
 public class RepeatCommand implements Command {
+
     @Override
     public void execute(CommandEvent event) {
         TextChannel channel = event.getChannel();

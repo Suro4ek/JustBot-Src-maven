@@ -4,7 +4,6 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.rien.bot.api.music.PlayerManager;
 import ru.rien.bot.api.music.player.Track;
@@ -29,8 +28,11 @@ import java.util.stream.Collectors;
 @Component
 public class QueueCommand implements Command {
 
-    @Autowired
-    private ModuleDsBot moduleDsBot;
+    private final ModuleDsBot moduleDsBot;
+
+    public QueueCommand(ModuleDsBot moduleDsBot) {
+        this.moduleDsBot = moduleDsBot;
+    }
 
     @Override
     public void execute(CommandEvent event) {
