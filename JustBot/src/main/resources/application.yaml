@@ -1,7 +1,7 @@
 spring:
   datasource:
     url: jdbc:postgresql://93.170.76.21:5432/test_db
-    username: rast
+    username: raft
     password: 123456
   jpa:
     generate-ddl: false
