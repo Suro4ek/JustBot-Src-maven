@@ -25,7 +25,6 @@ public class GuildWrapperLoader extends CacheLoader<String, GuildWrapper> {
     public static final char[] ALLOWED_SPECIAL_CHARACTERS = {'$', '_', ' ', '&', '%', '£', '!', '*', '@', '#', ':'};
     public static final Pattern ALLOWED_CHARS_REGEX = Pattern.compile("[\\w" + new String(ALLOWED_SPECIAL_CHARACTERS) + "\\p{Ll}\\p{Lu}\\p{Lt}\\p{Lm}\\p{Lo}]{3,32}");
 
-
     @Override
     @ParametersAreNonnullByDefault
     public GuildWrapper load(String id) {
@@ -38,12 +37,12 @@ public class GuildWrapperLoader extends CacheLoader<String, GuildWrapper> {
             wrapper.setPrefix(guildEntity.getPrefix());
             wrapper.setNswf(guildEntity.getNswfid());
             wrapper.setAnime(guildEntity.getAnimeid());
-            if(guildEntity.getBlockcommads() != null) {
-                for (String cmd : guildEntity.getBlockcommads()) {
-                    Command command = ModuleCommand.getInstance().getCommand(cmd, null);
-                    wrapper.getSettings().addBlackListCommands(command);
-                }
-            }
+//            if(guildEntity.getBlockcommads() != null) {
+//                for (String cmd : guildEntity.getBlockcommads()) {
+//                    Command command = ModuleCommand.getInstance().getCommand(cmd, null);
+//                    wrapper.getSettings().addBlackListCommands(command);
+//                }
+//            }
             List<GroupEntity> groupEntities = guildService.getGroups(guildEntity);
             for (GroupEntity groupEntity : groupEntities){
                 if(wrapper.getPermissions().addGroup(groupEntity.getName())) {

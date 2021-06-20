@@ -4,6 +4,7 @@ import com.sedmelluq.discord.lavaplayer.source.AudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.interactions.InteractionHook;
 import okhttp3.Request;
 import okhttp3.Response;
 import org.json.JSONArray;
@@ -19,16 +20,16 @@ import java.net.URLEncoder;
 public class YouTubeSearchExtractor extends YouTubeExtractor {
 
     @Override
-    public void process(String input, Player player, Message message, User user) throws Exception {
+    public void process(String input, Player player, InteractionHook message, User user) throws Exception {
         Response response = WebUtils.get(new Request.Builder().get().url(String.format("https://www.googleapis.com/youtube/v3/search" +
                         "?q=%s&part=snippet&key=%s&type=video,playlist",
                 URLEncoder.encode(input, "UTF-8"), "AIzaSyBM8M39G7DjN7_KuY8iHHwAJaoraGhr8PU")));
 
         if (response.code() == 403) {
             // \uD83E\uDD15 = :head_bandage:
-            MessageUtils.editMessage(null, MessageUtils.getEmbed(user)
+            message.sendMessageEmbeds( MessageUtils.getEmbed(user)
                     .setDescription("Похоже, мы попали в лимит YouTube API \uD83E\uDD15 "
-                            + " Попробуйте поискать позже!"), message);
+                            + " Попробуйте поискать позже!").build()).queue();
             response.close();
             return;
         }
@@ -54,9 +55,9 @@ public class YouTubeSearchExtractor extends YouTubeExtractor {
             }
         }
         if (link == null) {
-            MessageUtils.editMessage(null, MessageUtils.getEmbed(user)
+            message.sendMessageEmbeds(MessageUtils.getEmbed(user)
                     .setDescription(String
-                            .format("Ничего не смог найти по `%s`", input)), message);
+                            .format("Ничего не смог найти по `%s`", input)).build()).queue();
             return;
         }
         super.process(link, player, message, user);

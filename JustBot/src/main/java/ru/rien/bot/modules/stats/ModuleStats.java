@@ -36,6 +36,9 @@ public class ModuleStats extends ModuleDiscord {
             public void run() {
                 guildService.findall().forEach(guildEntity -> {
                     GuildWrapper guildWrapper = getModuleDsBot().getManager().getGuildNoCache("" + guildEntity.getGuildid());
+                    if(guildWrapper == null){
+                        return;
+                    }
                     if (guildWrapper.getGuildEntity().isStats()) {
                         Category category = guildWrapper.getGuild().getCategoryById(guildWrapper.getGuildEntity().getStatsid());
                         if (category != null) {

@@ -6,6 +6,7 @@ import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.interactions.InteractionHook;
 import ru.rien.bot.api.music.player.Player;
 import ru.rien.bot.api.music.player.Playlist;
 import ru.rien.bot.api.music.player.Track;
@@ -21,7 +22,7 @@ public class SavedPlaylistExtractor implements Extractor {
     }
 
     @Override
-    public void process(String input, Player player, Message message, User user) throws Exception {
+    public void process(String input, Player player, InteractionHook message, User user) throws Exception {
         input = input.substring(input.indexOf('\u200B') + 1).replaceAll("\\[? ?]?", "");
         int i = 0;
         ArrayList<Track> playlist = new ArrayList<>();
@@ -52,8 +53,8 @@ public class SavedPlaylistExtractor implements Extractor {
         if (!playlist.isEmpty()) {
             player.queue(new Playlist(playlist));
         }
-        MessageUtils.editMessage(null, MessageUtils.getEmbed(user)
-                .setDescription(String.format("*Загружено %s песен!*", i)), message);
+        message.sendMessageEmbeds(MessageUtils.getEmbed(user)
+                .setDescription(String.format("*Загружено %s песен!*", i)).build()).queue();
     }
 
     @Override

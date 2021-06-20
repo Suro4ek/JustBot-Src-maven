@@ -1,11 +1,14 @@
 package ru.rien.bot.commands.general;
 
+import net.dv8tion.jda.api.entities.Invite;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import org.springframework.stereotype.Component;
 import ru.rien.bot.modules.command.Command;
 import ru.rien.bot.modules.command.CommandEvent;
 import ru.rien.bot.modules.command.CommandType;
+import ru.rien.bot.modules.messsage.Language;
 import ru.rien.bot.objects.GuildWrapper;
 import ru.rien.bot.permission.Permission;
 import ru.rien.bot.utils.MessageUtils;
@@ -14,16 +17,13 @@ import ru.rien.bot.utils.MessageUtils;
 public class InfoCommand implements Command {
     @Override
     public void execute(CommandEvent event) {
-        TextChannel channel = event.getChannel();
         GuildWrapper guild = event.getGuild();
         User user = event.getSender();
         guild.getGuild().retrieveOwner().queue(member -> {
             MessageUtils.sendInfoMessage("Создатель сервера: " + member.getEffectiveName() + "\n"
                     +"Участников: " + guild.getGuild().getMemberCount() + "\n"
-                    +"Регион: " + guild.getGuild().getRegion().getName(), channel,user);
+                    +"Регион: " + guild.getGuild().getRegion().getName(), event.getEvent().deferReply(true), user);
         });
-
-
     }
 
     @Override
@@ -32,18 +32,23 @@ public class InfoCommand implements Command {
     }
 
     @Override
-    public String getDescription(GuildWrapper guildWrapper) {
+    public String getDescription(Language guildWrapper) {
         return "Получить информацию про сервер";
     }
 
-    @Override
-    public String getUsage(GuildWrapper guildWrapper) {
-        return "{%}info - получение информации про сервер";
-    }
+//    @Override
+//    public String getUsage(GuildWrapper guildWrapper) {
+//        return "{%}info - получение информации про сервер";
+//    }
 
     @Override
     public CommandType getType() {
         return CommandType.GENERAL;
+    }
+
+    @Override
+    public OptionData[] parameters() {
+        return new OptionData[0];
     }
 
     @Override

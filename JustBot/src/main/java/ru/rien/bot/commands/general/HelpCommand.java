@@ -4,11 +4,17 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.interactions.InteractionHook;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
+import net.dv8tion.jda.api.requests.restaction.interactions.ReplyAction;
+import net.dv8tion.jda.internal.requests.restaction.interactions.ReplyActionImpl;
 import org.springframework.stereotype.Component;
 import ru.rien.bot.modules.command.Command;
 import ru.rien.bot.modules.command.CommandEvent;
 import ru.rien.bot.modules.command.CommandType;
 import ru.rien.bot.modules.dsBot.JustBotManager;
+import ru.rien.bot.modules.messsage.Language;
 import ru.rien.bot.objects.GuildWrapper;
 import ru.rien.bot.permission.Permission;
 import ru.rien.bot.utils.MessageUtils;
@@ -20,6 +26,7 @@ import ru.rien.bot.utils.pagination.PaginationUtil;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 @Component
@@ -28,26 +35,32 @@ public class HelpCommand implements Command {
 
     @Override
     public void execute(CommandEvent event) {
-        String[] args = event.getArgs();
-        TextChannel channel = event.getChannel();
+
         User sender = event.getSender();
         GuildWrapper guild = event.getGuild();
         Member member = event.getMember();
-        if (args.length == 1) {
+//        ReplyAction replyAction = event.getEvent().deferReply(true);
+//        ReplyActionImpl action = (ReplyActionImpl)replyAction;
+        event.getEvent().deferReply(true).queue();
+        InteractionHook hook = event.getEvent().getHook();
+        hook.setEphemeral(true);
+        if (event.getOptionMappings().size() == 1) {
+            String category = event.getOptionMappings().get(0).getAsString().split(" ")[0];
             CommandType type;
             try {
-                type = CommandType.valueOf(args[0].toUpperCase());
+                type = CommandType.valueOf(category.toUpperCase(Locale.ROOT));
             } catch (IllegalArgumentException ignored) {
-                channel.sendMessage(MessageUtils.getEmbed(sender).setDescription(guild.getMessage("HELP_NO_CATEGORY")).build()).queue();
+                event.getEvent().replyEmbeds(MessageUtils.getEmbed(sender).setDescription(guild.getMessage("HELP_NO_CATEGORY")).build())
+                        .setEphemeral(true).queue();
                 return;
             }
 
-            sendCommands(guild, channel, member, type);
+            sendCommands(guild, hook, member, type);
         } else
-            sendCommands(channel.getGuild(), channel, sender, event.getMember(), event.getGuild());
+            sendCommands(event.getGuild().getGuild(), hook, sender, event.getMember(), event.getGuild());
     }
 
-    private void sendCommands(Guild guild, TextChannel channel, User sender, Member member, GuildWrapper guildWrapper) {
+    private void sendCommands(Guild guild, InteractionHook channel, User sender, Member member, GuildWrapper guildWrapper) {
         List<String> pages = new ArrayList<>();
         for (CommandType c : CommandType.getTypes()) {
             List<String> help = c.getCommands()
@@ -58,7 +71,7 @@ public class HelpCommand implements Command {
                                             .getPermission()))
                     .filter(command -> !guildWrapper.getSettings().getBlacklistCommands().contains(command))
                     .map(command -> JustBotManager.instance().getGuild(guild.getId()).getPrefix() + command.getCommand() + " - " + command
-                            .getDescription(guildWrapper) + '\n')
+                            .getDescription(Language.getLanguage(guildWrapper.getLang())) + '\n')
                     .collect(Collectors.toList());
             StringBuilder sb = new StringBuilder();
             sb.append("**").append(c.getName()).append("**\n");
@@ -79,14 +92,14 @@ public class HelpCommand implements Command {
         PaginationUtil.sendEmbedPagedMessage(builder.build(), 0, channel, sender, ButtonGroupConstants.HELP);
     }
 
-    public void sendCommands(GuildWrapper guild, TextChannel channel, Member member, CommandType type) {
+    public void sendCommands(GuildWrapper guild, InteractionHook channel, Member member, CommandType type) {
         List<String> pages = new ArrayList<>();
         List<String> help = type.getCommands()
-                .stream().filter(cmd -> getPermissions(channel)
+                .stream().filter(cmd -> getPermissions(channel.getInteraction().getTextChannel())
                         .hasPermission(member, cmd.getPermission()))
                 .filter(command -> !guild.getSettings().getBlacklistCommands().contains(command))
                 .map(command -> guild.getPrefix() + command.getCommand() + " - " + command
-                        .getDescription(guild) + '\n')
+                        .getDescription(Language.getLanguage(guild.getLang())) + '\n')
                 .collect(Collectors.toList());
         StringBuilder sb = new StringBuilder();
         for (String s : help) {
@@ -114,14 +127,14 @@ public class HelpCommand implements Command {
     }
 
     @Override
-    public String getDescription(GuildWrapper guild) {
+    public String getDescription(Language guild) {
         return guild.getMessage("HELP_DESCRIPTION");
     }
 
-    @Override
-    public String getUsage(GuildWrapper guild) {
-        return guild.getMessage("HELP_USAGE");
-    }
+//    @Override
+//    public String getUsage(GuildWrapper guild) {
+//        return guild.getMessage("HELP_USAGE");
+//    }
 
     @Override
     public Permission getPermission() {
@@ -131,5 +144,10 @@ public class HelpCommand implements Command {
     @Override
     public CommandType getType() {
         return CommandType.GENERAL;
+    }
+
+    @Override
+    public OptionData[] parameters() {
+        return new OptionData[]{new OptionData(OptionType.STRING, "category", "category name", false)};
     }
 }

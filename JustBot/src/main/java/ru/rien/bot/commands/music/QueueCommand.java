@@ -1,9 +1,8 @@
 package ru.rien.bot.commands.music;
 
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.interactions.InteractionHook;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import org.springframework.stereotype.Component;
 import ru.rien.bot.api.music.PlayerManager;
 import ru.rien.bot.api.music.player.Track;
@@ -11,6 +10,7 @@ import ru.rien.bot.modules.command.Command;
 import ru.rien.bot.modules.command.CommandEvent;
 import ru.rien.bot.modules.command.CommandType;
 import ru.rien.bot.modules.dsBot.ModuleDsBot;
+import ru.rien.bot.modules.messsage.Language;
 import ru.rien.bot.music.extractors.YouTubeExtractor;
 import ru.rien.bot.objects.GuildWrapper;
 import ru.rien.bot.permission.Permission;
@@ -36,68 +36,68 @@ public class QueueCommand implements Command {
 
     @Override
     public void execute(CommandEvent event) {
-        Message message = event.getMessage();
-        String[] args = event.getArgs();
         Member member = event.getMember();
-        TextChannel channel = event.getChannel();
+        event.getEvent().deferReply(false).queue();
+        InteractionHook interactionHook = event.getEvent().getHook();
         GuildWrapper guild = event.getGuild();
         User sender = event.getSender();
         PlayerManager manager = moduleDsBot.getMusicManager();
-        if (args.length < 1 || args.length > 2) {
-            send(guild,channel, member);
-        } else {
-            if (args.length == 1) {
-                if (args[0].equalsIgnoreCase("clear")) {
-                    if (!this.getPermissions(channel).hasPermission(member, Permission.QUEUE_CLEAR)) {
-                        MessageUtils.sendErrorMessage(guild.getMessage("NEED_PERMISSION", Permission.QUEUE_CLEAR), channel, sender);
-                        return;
-                    }
-                    manager.getPlayer(channel.getGuild().getId()).getPlaylist().clear();
-                    channel.sendMessage(guild.getMessage("QUEUE_CLEAN")).queue();
-                } else if (args[0].equalsIgnoreCase("remove")) {
-                    MessageUtils.sendUsage(this,event.getGuild(), channel, sender, args);
-                } else if (args[0].equalsIgnoreCase("here")) {
-                    send(guild,channel, member);
-                } else {
-                    MessageUtils.sendUsage(this,event.getGuild(), channel, sender, args);
-                }
-            } else {
-                if (args[0].equalsIgnoreCase("remove")) {
-                    int number;
-                    try {
-                        number = Integer.parseInt(args[1]);
-                    } catch (NumberFormatException e) {
-                        MessageUtils.sendErrorMessage(guild.getMessage("NOT_NUMBER"), channel);
-                        return;
-                    }
-
-                    Queue<Track> queue = manager.getPlayer(channel.getGuild().getId()).getPlaylist();
-
-                    if (number < 1 || number > queue.size()) {
-                        MessageUtils
-                                .sendErrorMessage(guild.getMessage("QUEUE_INDEX",queue
-                                        .size()), channel);
-                        return;
-                    }
-
-                    List<Track> playlist = new ArrayList<>(queue);
-                    playlist.remove(number - 1);
-                    queue.clear();
-                    queue.addAll(playlist);
-
-                    channel.sendMessage(MessageUtils.getEmbed(sender)
-                            .setDescription(guild.getMessage("QUEUE_DELETE_LIST", number))
-                            .build()).queue();
-                }
-            }
-        }
+//        if (args.length < 1 || args.length > 2) {
+            send(guild, interactionHook, member);
+//        }
+//        } else {
+//            if (args.length == 1) {
+//                if (args[0].equalsIgnoreCase("clear")) {
+//                    if (!this.getPermissions(channel).hasPermission(member, Permission.QUEUE_CLEAR)) {
+//                        MessageUtils.sendErrorMessage(guild.getMessage("NEED_PERMISSION", Permission.QUEUE_CLEAR), channel, sender);
+//                        return;
+//                    }
+//                    manager.getPlayer(channel.getGuild().getId()).getPlaylist().clear();
+//                    channel.sendMessage(guild.getMessage("QUEUE_CLEAN")).queue();
+//                } else if (args[0].equalsIgnoreCase("remove")) {
+//                    MessageUtils.sendUsage(this,event.getGuild(), channel, sender, args);
+//                } else if (args[0].equalsIgnoreCase("here")) {
+//                    send(guild,channel, member);
+//                } else {
+//                    MessageUtils.sendUsage(this,event.getGuild(), channel, sender, args);
+//                }
+//            } else {
+//                if (args[0].equalsIgnoreCase("remove")) {
+//                    int number;
+//                    try {
+//                        number = Integer.parseInt(args[1]);
+//                    } catch (NumberFormatException e) {
+//                        MessageUtils.sendErrorMessage(guild.getMessage("NOT_NUMBER"), channel);
+//                        return;
+//                    }
+//
+//                    Queue<Track> queue = manager.getPlayer(channel.getGuild().getId()).getPlaylist();
+//
+//                    if (number < 1 || number > queue.size()) {
+//                        MessageUtils
+//                                .sendErrorMessage(guild.getMessage("QUEUE_INDEX",queue
+//                                        .size()), channel);
+//                        return;
+//                    }
+//
+//                    List<Track> playlist = new ArrayList<>(queue);
+//                    playlist.remove(number - 1);
+//                    queue.clear();
+//                    queue.addAll(playlist);
+//
+//                    channel.sendMessage(MessageUtils.getEmbed(sender)
+//                            .setDescription(guild.getMessage("QUEUE_DELETE_LIST", number))
+//                            .build()).queue();
+//                }
+//            }
+//        }
     }
 
-    private void send(GuildWrapper guild,TextChannel channel, Member sender) {
+    private void send(GuildWrapper guild, InteractionHook channel, Member sender) {
         PlayerManager manager = moduleDsBot.getMusicManager();
-        Track currentTrack = manager.getPlayer(channel.getGuild().getId()).getPlayingTrack();
+        Track currentTrack = manager.getPlayer(guild.getGuild().getId()).getPlayingTrack();
 
-        if (!manager.getPlayer(channel.getGuild().getId()).getPlaylist().isEmpty()
+        if (!manager.getPlayer(guild.getGuild().getId()).getPlaylist().isEmpty()
                 || currentTrack != null) {
             List<String> songs = new ArrayList<>();
             songs.add(guild.getMessage("QUEUE_NOW_PLAYING",
@@ -105,7 +105,7 @@ public class QueueCommand implements Command {
                     YouTubeExtractor.WATCH_URL + currentTrack.getTrack().getIdentifier(),
                     currentTrack.getMeta().get("requester")));
             AtomicInteger i = new AtomicInteger(1);
-            manager.getPlayer(channel.getGuild().getId()).getPlaylist().forEach(track ->
+            manager.getPlayer(guild.getGuild().getId()).getPlaylist().forEach(track ->
                     songs.add(guild.getMessage("QUEUE_INC",i.getAndIncrement(),
                             track.getTrack().getInfo().title,
                             YouTubeExtractor.WATCH_URL + track.getTrack().getIdentifier(),
@@ -116,7 +116,7 @@ public class QueueCommand implements Command {
                     .setTitle(guild.getMessage("QUEUE_TITLE"));
             PaginationUtil.sendEmbedPagedMessage(pe.build(), 0, channel, sender.getUser(), ButtonGroupConstants.QUEUE);
         } else {
-            MessageUtils.sendErrorMessage(MessageUtils.getEmbed().setDescription(guild.getMessage("QUEUE_NOT_MUSIC")), channel);
+            MessageUtils.sendErrorMessage(MessageUtils.getEmbed().setDescription(guild.getMessage("QUEUE_NOT_MUSIC")).build(), channel);
         }
     }
 
@@ -127,17 +127,17 @@ public class QueueCommand implements Command {
 
     // TODO: FIX THIS MONSTROSITY
     @Override
-    public String getDescription(GuildWrapper guild) {
+    public String getDescription(Language guild) {
         return guild.getMessage("QUEUE_DESCRIPTION");
 //                "NOTE: If too many it shows only the amount that can fit. You can use `queue clear` to remove all songs." +
 //                " You can use `queue remove #` to remove a song under #.\n" +
 //                "To make it not send a DM do `queue here`";
     }
 
-    @Override
-    public String getUsage(GuildWrapper guild) {
-        return guild.getMessage("QUEUE_USAGE");
-    }
+//    @Override
+//    public String getUsage(GuildWrapper guild) {
+//        return guild.getMessage("QUEUE_USAGE");
+//    }
 
     @Override
     public Permission getPermission() {
@@ -152,5 +152,10 @@ public class QueueCommand implements Command {
     @Override
     public CommandType getType() {
         return CommandType.MUSIC;
+    }
+
+    @Override
+    public OptionData[] parameters() {
+        return new OptionData[0];
     }
 }

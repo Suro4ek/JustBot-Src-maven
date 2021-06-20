@@ -10,6 +10,7 @@ import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceUpdateEvent;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.MessageDeleteEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageDeleteEvent;
@@ -125,6 +126,9 @@ public abstract class ModuleDiscord extends CommonModule implements EventListene
     public void onGuildMessageDeleteEvent(@Nonnull GuildMessageDeleteEvent event){
 
     }
+    public void onSlashCommandEvent(@Nonnull SlashCommandEvent event){
+
+    }
 
     @Override
     public void onEvent(@NotNull GenericEvent event) {
@@ -174,6 +178,8 @@ public abstract class ModuleDiscord extends CommonModule implements EventListene
             this.onGuildMessageReactionRemoveEvent((GuildMessageReactionRemoveEvent) event);
         }else if(event instanceof GuildMessageDeleteEvent){
             this.onGuildMessageDeleteEvent((GuildMessageDeleteEvent) event);
+        }else if(event instanceof SlashCommandEvent){
+            this.onSlashCommandEvent((SlashCommandEvent) event);
         }
     }
 }

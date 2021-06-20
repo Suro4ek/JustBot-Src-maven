@@ -5,27 +5,34 @@ import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.interactions.commands.OptionMapping;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
+import net.dv8tion.jda.api.requests.restaction.interactions.ReplyAction;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.stereotype.Component;
 import ru.rien.bot.modules.command.Command;
 import ru.rien.bot.modules.command.CommandEvent;
 import ru.rien.bot.modules.command.CommandType;
+import ru.rien.bot.modules.messsage.Language;
 import ru.rien.bot.objects.GuildWrapper;
 import ru.rien.bot.permission.Permission;
 import ru.rien.bot.utils.MessageUtils;
+
+import java.util.List;
 
 @Component
 public class CovidCommand implements Command {
     @Override
     public void execute(CommandEvent event) {
-        String[] args = event.getArgs();
         User user = event.getSender();
-        if(args.length == 0){
+        List<OptionMapping> optionMappings = event.getOptionMappings();
+        if(optionMappings.size() == 0){
             try {
                 HttpResponse<JsonNode> response = Unirest.get("https://disease.sh/v3/covid-19/all").asJson();
                 JSONObject jsObject = response.getBody().getObject();
-                event.getChannel().sendMessage(MessageUtils.getEmbed(user)
+                event.getEvent().replyEmbeds(MessageUtils.getEmbed(user)
                         .setTitle("Ковид").
                                 addField("Всего","**Зараженных** " + jsObject.getLong("cases") + "\n" +
                                         "**Выздоровели** " + jsObject.getLong("recovered") +"\n" +
@@ -37,13 +44,14 @@ public class CovidCommand implements Command {
                                 addField("**В критическом состоянии** ", jsObject.getLong("critical")+"", true).
                                 addField("**Тестов** ", jsObject.getLong("tests")+"", true).
 //                                setFooter("`Последнее обновление `").
-        build())
+                  build()).setEphemeral(true)
                         .queue();
             } catch (UnirestException e) {
+                MessageUtils.sendErrorMessage("Не удалось отправить запрос", event.getEvent().deferReply(true));
                 e.printStackTrace();
             }
         }else{
-            String country = args[0];
+            String country = optionMappings.get(0).getAsString();
             try {
                 HttpResponse<JsonNode> response = Unirest.get("https://disease.sh/v3/covid-19/countries/" + country).asJson();
                 try {
@@ -55,7 +63,7 @@ public class CovidCommand implements Command {
                 }
                 JSONObject jsObject = response.getBody().getObject();
                 String countryimg = jsObject.getJSONObject("countryInfo").getString("flag");
-                event.getChannel().sendMessage(MessageUtils.getEmbed(user)
+                event.getEvent().replyEmbeds(MessageUtils.getEmbed(user)
                 .setTitle("Ковид в " + country).
                                 addField("Всего","**Зараженных** " + jsObject.getLong("cases") + "\n" +
                                         "**Выздоровели** " + jsObject.getLong("recovered") +"\n" +
@@ -68,9 +76,10 @@ public class CovidCommand implements Command {
                                 addField("**Тестов** ", jsObject.getLong("tests")+"", true).
                                 setImage(countryimg).
 //                                setFooter("`Последнее обновление `").
-                                build())
+                                build()).setEphemeral(true)
                         .queue();
             } catch (UnirestException e) {
+                MessageUtils.sendErrorMessage("Не удалось отправить запрос", event.getEvent().deferReply(true));
                 e.printStackTrace();
             }
         }
@@ -82,19 +91,24 @@ public class CovidCommand implements Command {
     }
 
     @Override
-    public String getDescription(GuildWrapper guildWrapper) {
+    public String getDescription(Language guildWrapper) {
         return "Выводит статистику по covid";
     }
 
-    @Override
-    public String getUsage(GuildWrapper guildWrapper) {
-        return "{%}covid - Статистика в мире\n" +
-                "{%}covid [Страна EN] - Статистика по стране";
-    }
+//    @Override
+//    public String getUsage(GuildWrapper guildWrapper) {
+//        return "{%}covid - Статистика в мире\n" +
+//                "{%}covid [Страна EN] - Статистика по стране";
+//    }
 
     @Override
     public CommandType getType() {
         return CommandType.GENERAL;
+    }
+
+    @Override
+    public OptionData[] parameters() {
+        return new OptionData[]{new OptionData(OptionType.STRING, "country", "just country name")};
     }
 
     @Override

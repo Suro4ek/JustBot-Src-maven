@@ -5,6 +5,7 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
+import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import okhttp3.ConnectionPool;
 import okhttp3.OkHttpClient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,13 +51,19 @@ public class ModuleDsBot extends CommonModule {
     //test token  ODA5MDUzODI3MTUxNjkxODA4.YCPgFw.xBiasLgkdRtxL-Lm9cUeYsZlKo0
     @Override
     protected void onEnable() {
-        JDABuilder builder = JDABuilder.createDefault(getConfig().getOrSet("ds.token1","Nzk4ODQ0MDQ0MDEyMTU5MDA2.X_67fQ.adMhtrAhzRKmF50mO2xvG4FEaC4"));
+        JDABuilder builder = JDABuilder.createLight(getConfig().getOrSet("ds.token1","Nzk4ODQ0MDQ0MDEyMTU5MDA2.X_67fQ.adMhtrAhzRKmF50mO2xvG4FEaC4"));
         manager = new JustBotManager(this, guildService);
         // Enable the bulk delete event
         builder.setBulkDeleteSplittingEnabled(false);
         // Set activity (like "playing Something")
-        builder.setActivity(Activity.watching("_prefix"));
-        builder.enableIntents(GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_MEMBERS);
+        builder.setActivity(Activity.watching("/help"));
+        builder.enableCache(CacheFlag.VOICE_STATE);
+        builder.enableIntents(GatewayIntent.GUILD_MESSAGES,
+                GatewayIntent.GUILD_MEMBERS,
+                GatewayIntent.GUILD_VOICE_STATES,
+                GatewayIntent.GUILD_MESSAGE_REACTIONS,
+                GatewayIntent.GUILD_WEBHOOKS);
+        builder.setAutoReconnect(true);
         builder.setMemberCachePolicy(MemberCachePolicy.ALL);
         builder.setLargeThreshold(50);
         try {

@@ -8,8 +8,8 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.TextChannel;
 import ru.rien.bot.api.music.player.Player;
 import ru.rien.bot.api.music.player.Track;
-import ru.rien.bot.commands.music.SkipCommand;
-import ru.rien.bot.commands.music.SongCommand;
+//import ru.rien.bot.commands.music.SkipCommand;
+//import ru.rien.bot.commands.music.SongCommand;
 import ru.rien.bot.objects.Getters;
 import ru.rien.bot.objects.GuildWrapper;
 import ru.rien.bot.utils.FormatUtils;
@@ -37,7 +37,7 @@ public class PlayerListener extends AudioEventAdapter {
             JustBotManager.instance().getLastActive().put(Long.parseLong(player.getGuildId()), System.currentTimeMillis());
         }
 
-        VoteUtil.remove(SkipCommand.getSkipUUID(), wrapper.getGuild());
+//        VoteUtil.remove(SkipCommand.getSkipUUID(), wrapper.getGuild());
     }
 
     @Override
@@ -55,14 +55,14 @@ public class PlayerListener extends AudioEventAdapter {
                     Track track = player.getPlayingTrack();
                     Queue<Track> playlist = player.getPlaylist();
                     c.sendMessage(MessageUtils.getEmbed()
-                            .addField(wrapper.getMessage("SONG_NOW_PLAYING"), SongCommand.getLink(track), false)
+//                            .addField(wrapper.getMessage("SONG_NOW_PLAYING"), SongCommand.getLink(track), false)
                             .addField(wrapper.getMessage("SONG_DURATION"), FormatUtils
                                     .formatDuration(track.getTrack().getDuration()), false)
                             .addField(wrapper.getMessage("SONG_REQUESTER"),
                                     String.format("<@!%s>", track.getMeta()
                                             .get("requester")), false)
-                            .addField(wrapper.getMessage("SONG_NEXT"), playlist.isEmpty() ? wrapper.getMessage("SONG_NOTHING") :
-                                    SongCommand.getLink(playlist.peek()), false)
+//                            .addField(wrapper.getMessage("SONG_NEXT"), playlist.isEmpty() ? wrapper.getMessage("SONG_NOTHING") :
+//                                    SongCommand.getLink(playlist.peek()), false)
                             .setImage("https://img.youtube.com/vi/" + track.getTrack().getIdentifier() + "/hqdefault.jpg")
                             .build()).queue();
                 } else {

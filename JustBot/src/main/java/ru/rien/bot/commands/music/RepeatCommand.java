@@ -2,6 +2,7 @@ package ru.rien.bot.commands.music;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import org.springframework.stereotype.Component;
 import ru.rien.bot.api.music.player.Player;
 import ru.rien.bot.api.music.player.Track;
@@ -9,6 +10,7 @@ import ru.rien.bot.modules.command.Command;
 import ru.rien.bot.modules.command.CommandEvent;
 import ru.rien.bot.modules.command.CommandType;
 import ru.rien.bot.modules.dsBot.ModuleDsBot;
+import ru.rien.bot.modules.messsage.Language;
 import ru.rien.bot.objects.GuildWrapper;
 import ru.rien.bot.permission.Permission;
 import ru.rien.bot.utils.MessageUtils;
@@ -42,18 +44,23 @@ public class RepeatCommand implements Command {
     }
 
     @Override
-    public String getDescription(GuildWrapper guildWrapper) {
+    public String getDescription(Language guildWrapper) {
         return "Повторяет песню";
     }
 
-    @Override
-    public String getUsage(GuildWrapper guildWrapper) {
-        return "{%}repeat - Повтор песни";
-    }
+//    @Override
+//    public String getUsage(GuildWrapper guildWrapper) {
+//        return "{%}repeat - Повтор песни";
+//    }
 
     @Override
     public CommandType getType() {
         return CommandType.MUSIC;
+    }
+
+    @Override
+    public OptionData[] parameters() {
+        return new OptionData[0];
     }
 
     @Override

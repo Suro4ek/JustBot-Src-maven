@@ -2,6 +2,7 @@ package ru.rien.bot.utils;
 
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.requests.restaction.interactions.ReplyAction;
 import org.apache.commons.lang3.StringUtils;
 import ru.rien.bot.api.music.PlayerManager;
 import ru.rien.bot.modules.dsBot.JustBotManager;
@@ -102,33 +103,33 @@ public class GuildUtils {
     /**
      * Joins the ru.rien.bot to a {@link TextChannel}.
      *
-     * @param channel The chanel to send an error message to in case this fails.
+     * @param replyAction The chanel to send an error message to in case this fails.
      * @param member  The member requesting the join. This is also how we determine what channel to join.
      */
-    public static void joinChannel(TextChannel channel, Member member) {
-        if (channel.getGuild().getSelfMember()
+    public static void joinChannel(Guild guild, ReplyAction replyAction, Member member) {
+        if (guild.getSelfMember()
                 .hasPermission(member.getVoiceState().getChannel(), Permission.VOICE_CONNECT) &&
-                channel.getGuild().getSelfMember()
+                guild.getSelfMember()
                         .hasPermission(member.getVoiceState().getChannel(), Permission.VOICE_SPEAK)) {
             if (member.getVoiceState().getChannel().getUserLimit() > 0 && member.getVoiceState().getChannel()
                     .getMembers().size()
                     >= member.getVoiceState().getChannel().getUserLimit() && !member.getGuild().getSelfMember()
                     .hasPermission(member.getVoiceState().getChannel(), Permission.MANAGE_CHANNEL)) {
-                MessageUtils.sendErrorMessage("НЕ могу войти :(\n\nВ этом канале лимит по пользователям и у меня нет прав ", channel);
+                MessageUtils.sendErrorMessage("НЕ могу войти :(\n\nВ этом канале лимит по пользователям и у меня нет прав ", replyAction);
                 return;
             }
             PlayerManager musicManager = ModuleDsBot.getInstance().getMusicManager();
-            channel.getGuild().getAudioManager().openAudioConnection(member.getVoiceState().getChannel());
-            musicManager.getPlayer(channel.getGuild().getId()).play();
+            guild.getAudioManager().openAudioConnection(member.getVoiceState().getChannel());
+            musicManager.getPlayer(guild.getId()).play();
 
-            if (musicManager.getPlayer(channel.getGuild().getId()).getPaused()) {
-                MessageUtils.sendWarningMessage("В данный момент музыка на паузе `{%}resume`", channel);
+            if (musicManager.getPlayer(guild.getId()).getPaused()) {
+                MessageUtils.sendWarningMessage("В данный момент музыка на паузе `{%}resume`", replyAction);
             }
         } else {
-            MessageUtils.sendErrorMessage("У меня нет прав " + (!channel.getGuild().getSelfMember()
+            MessageUtils.sendErrorMessage("У меня нет прав " + (!guild.getSelfMember()
                     .hasPermission(member.getVoiceState()
                             .getChannel(), Permission.VOICE_CONNECT) ?
-                    "Подключаться" : "Говорить") + " в это канале!", channel);
+                    "Подключаться" : "Говорить") + " в это канале!", replyAction);
         }
     }
 

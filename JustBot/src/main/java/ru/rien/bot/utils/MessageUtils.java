@@ -4,6 +4,9 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.interactions.InteractionHook;
+import net.dv8tion.jda.api.requests.restaction.interactions.ReplyAction;
+import net.dv8tion.jda.internal.requests.restaction.interactions.ReplyActionImpl;
 import org.apache.commons.lang3.StringUtils;
 import ru.rien.bot.modules.command.Command;
 import ru.rien.bot.modules.dsBot.ModuleDsBot;
@@ -30,12 +33,42 @@ public class MessageUtils {
         channel.sendMessage(embedBuilder.build()).queue();
     }
 
+    public static void sendErrorMessage(String message, ReplyAction channel) {
+        EmbedBuilder embedBuilder = new EmbedBuilder().setColor(Color.CYAN);
+        embedBuilder.setDescription(message);
+        ReplyActionImpl action = (ReplyActionImpl)channel;
+        action.addEmbeds(embedBuilder.build()).queue();
+    }
+
+    public static void sendErrorMessage(String message, InteractionHook channel) {
+        EmbedBuilder embedBuilder = new EmbedBuilder().setColor(Color.CYAN);
+        embedBuilder.setDescription(message);
+        channel.sendMessageEmbeds(embedBuilder.build()).queue();
+    }
+
+    public static void sendErrorMessage(MessageEmbed message, ReplyAction channel) {
+        ReplyActionImpl action = (ReplyActionImpl)channel;
+        action.addEmbeds(message).queue();
+    }
+
+    public static void sendErrorMessage(MessageEmbed message, InteractionHook channel) {
+        channel.sendMessageEmbeds(message).queue();
+    }
+
     public static void sendInfoMessage(String message, TextChannel channel, User sender) {
         sendMessage(MessageType.INFO, message, channel, sender);
     }
 
+    public static void sendInfoMessage(String message, ReplyAction replyAction, User sender) {
+        sendMessage(MessageType.INFO, message, replyAction, sender);
+    }
+
     public static void sendErrorMessage(EmbedBuilder builder, TextChannel channel) {
         sendMessage(MessageType.ERROR, builder, channel);
+    }
+
+    public static void sendInfoMessage(EmbedBuilder builder, ReplyAction replyAction) {
+        sendMessage(MessageType.INFO, builder, replyAction);
     }
 
     // Root of sendMessage(Type, Builder, channel)
@@ -45,6 +78,10 @@ public class MessageUtils {
 
 
     public static void sendErrorMessage(String message, TextChannel channel, User sender) {
+        sendMessage(MessageType.ERROR, message, channel, sender);
+    }
+
+    public static void sendErrorMessage(String message, ReplyAction channel, User sender) {
         sendMessage(MessageType.ERROR, message, channel, sender);
     }
 
@@ -140,15 +177,31 @@ public class MessageUtils {
     public static void sendMessage(MessageType type, String message, TextChannel channel) {
         sendMessage(type, message, channel, null);
     }
+
+    public static void sendMessage(MessageType type, String message, ReplyAction channel) {
+        sendMessage(type, message, channel, null);
+    }
     public static void sendWarningMessage(String message, TextChannel channel) {
+        sendMessage(MessageType.WARNING, message, channel);
+    }
+
+    public static void sendWarningMessage(String message, ReplyAction channel) {
         sendMessage(MessageType.WARNING, message, channel);
     }
 
     public static void sendWarningMessage(String message, TextChannel channel, User sender) {
         sendMessage(MessageType.WARNING, message, channel, sender);
     }
+
     public static void sendMessage(MessageType type, String message, TextChannel channel, User sender) {
         sendMessage(type, message, channel, sender, 0);
+    }
+
+    public static void sendMessage(MessageType type, String message, ReplyAction replyAction, User sender) {
+        sendMessage(type, (sender != null ? getEmbed(sender) : getEmbed()).setColor(type.getColor())
+                        .setTimestamp(OffsetDateTime.now(Clock.systemUTC()))
+                        .setDescription(message)
+                , replyAction);
     }
 
 
@@ -157,6 +210,24 @@ public class MessageUtils {
                         .setTimestamp(OffsetDateTime.now(Clock.systemUTC()))
                         .setDescription(FormatUtils.formatCommandPrefix((channel != null ? channel.getGuild() : null), message))
                 , channel, autoDeleteDelay);
+    }
+
+    public static void sendMessage(MessageType type, EmbedBuilder builder, ReplyAction replyAction) {
+        if (builder.build().getColor() == null)
+            builder.setColor(type.getColor());
+
+//        if (type != MessageType.WARNING && type != MessageType.ERROR && builder.getFields().isEmpty()) {
+//            Optional<String> globalMsg = getGlobalMessage();
+//            if ((!lastGlobalMsg.containsKey(channel.getIdLong())
+//                    || System.currentTimeMillis() - lastGlobalMsg.get(channel.getIdLong()) >= GLOBAL_MSG_DELAY)
+//                    && globalMsg.isPresent()) {
+//                lastGlobalMsg.put(channel.getIdLong(), System.currentTimeMillis());
+//
+//                builder.setDescription(builder.build().getDescription() + "\n\n" + globalMsg.get());
+//            }
+//        }
+        ReplyActionImpl action = (ReplyActionImpl)replyAction;
+        action.addEmbeds(builder.build()).queue();
     }
 
     public static void sendMessage(MessageType type, EmbedBuilder builder, TextChannel channel, long autoDeleteDelay) {
@@ -189,6 +260,10 @@ public class MessageUtils {
     }
 
     public static void sendSuccessMessage(String message, TextChannel channel, User sender) {
+        sendMessage(MessageType.SUCCESS, message, channel, sender);
+    }
+
+    public static void sendSuccessMessage(String message, ReplyAction channel, User sender) {
         sendMessage(MessageType.SUCCESS, message, channel, sender);
     }
 

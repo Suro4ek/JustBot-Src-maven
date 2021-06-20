@@ -1,12 +1,17 @@
 package ru.rien.bot.music;
 
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManager;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.interactions.InteractionHook;
+import net.dv8tion.jda.api.requests.restaction.interactions.ReplyAction;
+import net.dv8tion.jda.internal.requests.restaction.interactions.ReplyActionImpl;
 import ru.rien.bot.api.music.PlayerManager;
 import ru.rien.bot.modules.dsBot.ModuleDsBot;
 import ru.rien.bot.music.extractors.*;
+import ru.rien.bot.objects.GuildWrapper;
 import ru.rien.bot.utils.MessageUtils;
 
 import java.util.Arrays;
@@ -22,7 +27,8 @@ public class VideoThread extends Thread {
     private static final Set<Class<? extends AudioSourceManager>> managers = new HashSet<>();
     public static final ThreadGroup VIDEO_THREADS = new ThreadGroup("Video Threads");
     private User user;
-    private TextChannel channel;
+    private InteractionHook channel;
+    private GuildWrapper guildWrapper;
     private String url;
     private Extractor extractor;
 
@@ -34,7 +40,6 @@ public class VideoThread extends Thread {
 
     @Override
     public void run() {
-        Message message = channel.sendMessage("Поиск..").complete();
         try {
             if (extractor == null)
                 for (Class<? extends Extractor> clazz : extractors) {
@@ -45,14 +50,14 @@ public class VideoThread extends Thread {
                     break;
                 }
             if (extractor == null) {
-                MessageUtils.editMessage(message, "Не смог найти..");
+                channel.sendMessage("Не смог найти").queue();
                 return;
             }
             if (managers.add(extractor.getSourceManagerClass()))
                 manager.getManager().registerSourceManager(extractor.newSourceManagerInstance());
-            extractor.process(url, manager.getPlayer(channel.getGuild().getId()), message, user);
+            extractor.process(url, manager.getPlayer(guildWrapper.getGuild().getId()), channel, user);
         } catch (Exception e) {
-            ModuleDsBot.getInstance().getLogger().warn(("Не удалось инициализировать экстрактор для '{}'. Guild ID: " + channel.getGuild().getId()).replace("{}", url), e);
+            ModuleDsBot.getInstance().getLogger().warn(("Не удалось инициализировать экстрактор для '{}'. Guild ID: " + guildWrapper.getGuild().getId()).replace("{}", url), e);
 //            BotMain.reportError(channel, "Something went wrong while searching for the video!", e);
         }
     }
@@ -64,18 +69,20 @@ public class VideoThread extends Thread {
         super.start();
     }
 
-    public static VideoThread getThread(String url, TextChannel channel, User user) {
+    public static VideoThread getThread(String url, InteractionHook channel, GuildWrapper guildWrapper, User user) {
         VideoThread thread = new VideoThread();
         thread.url = url;
         thread.channel = channel;
+        thread.guildWrapper = guildWrapper;
         thread.user = user;
         return thread;
     }
 
-    public static VideoThread getSearchThread(String term, TextChannel channel, User user) {
+    public static VideoThread getSearchThread(String term, InteractionHook channel, GuildWrapper guildWrapper, User user) {
         VideoThread thread = new VideoThread();
         thread.url = term;
         thread.channel = channel;
+        thread.guildWrapper = guildWrapper;
         thread.user = user;
         thread.extractor = new YouTubeSearchExtractor();
         return thread;

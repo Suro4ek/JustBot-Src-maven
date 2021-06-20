@@ -5,13 +5,17 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.interactions.components.Button;
+import net.dv8tion.jda.api.requests.restaction.interactions.ReplyAction;
 import ru.rien.bot.schedule.JustBotTask;
 import ru.rien.bot.schedule.Scheduler;
 import ru.rien.bot.utils.MessageUtils;
 import ru.rien.bot.utils.buttons.ButtonUtil;
-import ru.rien.bot.utils.objects.ButtonGroup;
+import ru.rien.bot.utils.objects.MyButton;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -21,7 +25,7 @@ public class VoteUtil {
     private static Map<String, VoteGroup> groupMap = new ConcurrentHashMap<>();
     private static Map<String, VoteGroup.VoteRunnable> runnableMap = new ConcurrentHashMap<>();
 
-    public static void sendVoteMessage(UUID id, VoteGroup.VoteRunnable voteRunnable, VoteGroup group, long timeout, TextChannel channel, User user, String buttonGroupString, ButtonGroup.Button... optionalButtons) {
+    public static void sendVoteMessage(UUID id, VoteGroup.VoteRunnable voteRunnable, VoteGroup group, long timeout, TextChannel channel, User user, String buttonGroupString, List<MyButton> myButtons) {
         EmbedBuilder votesEmbed = new EmbedBuilder()
                 .setDescription("Голосов за " + group.getMessageDesc())
                 .addField("Да", "0", true)
@@ -29,45 +33,43 @@ public class VoteUtil {
         String messageDesc = group.getMessageDesc();
         votesEmbed.setColor(Color.CYAN);
         group.setVotesEmbed(votesEmbed);
-        ButtonGroup buttonGroup = new ButtonGroup(user.getIdLong(), buttonGroupString);
+        List<MyButton> buttonGroup = new ArrayList<>();
 
         groupMap.put(id + channel.getGuild().getId(), group);
         runnableMap.put(id + channel.getGuild().getId(), voteRunnable);
 
-        buttonGroup.addButton(new ButtonGroup.Button(355776056092917761L, (owner, user1, message) -> {
-            if (group.addVote(VoteGroup.Vote.YES, user1)) {
-                MessageUtils.sendAutoDeletedMessage(new EmbedBuilder().setDescription("Ты проголосовал за " + messageDesc).build(), 2000, channel);
+        buttonGroup.add(new MyButton(Button.primary(user.getId()+"yes_skip", "Да"), (event) -> {
+            if (group.addVote(VoteGroup.Vote.YES, event.getUser())) {
+                event.replyEmbeds(new EmbedBuilder().setDescription("Ты проголосовал за " + messageDesc).build()).setEphemeral(true).queue();
             } else {
-                MessageUtils.sendAutoDeletedMessage(new EmbedBuilder().setDescription("Ты не можешь голосовать " + messageDesc).build(), 2000, channel);
+                event.replyEmbeds(new EmbedBuilder().setDescription("Ты не можешь голосовать " + messageDesc).build()).setEphemeral(true).queue();
             }
         }));
 
-        buttonGroup.addButton(new ButtonGroup.Button(355776081384570881L, (owner, user1, message) -> {
-            if (group.addVote(VoteGroup.Vote.NO, user1)) {
-                MessageUtils.sendAutoDeletedMessage(new EmbedBuilder().setDescription("Ты проголосовал за" + messageDesc).build(), 2000, channel);
+        buttonGroup.add(new MyButton(Button.primary(user.getId()+"no_skip", "Нет"), (event) -> {
+            if (group.addVote(VoteGroup.Vote.NO, user)) {
+                event.replyEmbeds(new EmbedBuilder().setDescription("Ты проголосовал за " + messageDesc).build()).setEphemeral(true).queue();
             } else {
-                MessageUtils.sendAutoDeletedMessage(new EmbedBuilder().setDescription("Ты не можешь голосовать" + messageDesc).build(), 2000, channel);
+                event.replyEmbeds(new EmbedBuilder().setDescription("Ты не можешь голосовать " + messageDesc).build()).setEphemeral(true).queue();
             }
         }));
 
-        for(ButtonGroup.Button button : optionalButtons) {
-            buttonGroup.addButton(button);
-        }
+        myButtons.addAll(buttonGroup);
 
-        Message voteMessage = ButtonUtil.sendReturnedButtonedMessage(channel, votesEmbed.build(), buttonGroup);
-        group.setVoteMessage(voteMessage);
-
-        new JustBotTask("Votes-" + voteMessage.getId()){
-
-            @Override
-            public void run() {
-                voteRunnable.run(group.won());
-                groupMap.remove(group.getMessageDesc() + channel.getGuild().getId());
-                runnableMap.remove(group.getMessageDesc() + channel.getGuild().getId());
-                channel.deleteMessageById(voteMessage.getId()).queue();
-            }
-
-        }.delay(timeout);
+//        Message voteMessage = ButtonUtil.sendReturnedButtonedMessage(channel, votesEmbed.build(), buttonGroup);
+//        group.setVoteMessage(voteMessage);
+//
+//        new JustBotTask("Votes-" + voteMessage.getId()){
+//
+//            @Override
+//            public void run() {
+//                voteRunnable.run(group.won());
+//                groupMap.remove(group.getMessageDesc() + channel.getGuild().getId());
+//                runnableMap.remove(group.getMessageDesc() + channel.getGuild().getId());
+//                channel.deleteMessageById(voteMessage.getId()).queue();
+//            }
+//
+//        }.delay(timeout);
     }
 
     public static VoteGroup getVoteGroup(UUID uuid, Guild guild) {

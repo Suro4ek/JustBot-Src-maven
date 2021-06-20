@@ -1,7 +1,11 @@
 package ru.rien.bot.modules.command;
 
 import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.interactions.commands.OptionMapping;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import org.springframework.util.StringUtils;
+import ru.rien.bot.modules.messsage.Language;
 import ru.rien.bot.objects.GuildWrapper;
 
 import javax.annotation.Nonnull;
@@ -18,25 +22,45 @@ import java.util.stream.Stream;
 public class CommandEvent {
 
     private Command command;
+    private SubCommand subCommand;
     private User sender;
     private GuildWrapper guild;
     private TextChannel channel;
-    private Message message;
-    private String[] args;
+    private List<OptionMapping> optionMappings;
     private Member member;
+    private SlashCommandEvent event;
 
-    public CommandEvent(Command command,User sender, GuildWrapper guild, TextChannel channel, Message message, String[] args, Member member) {
+    public CommandEvent(Command command, User sender, GuildWrapper guild, TextChannel channel, List<OptionMapping> optionMappings, Member member, SlashCommandEvent event) {
         this.command = command;
         this.sender = sender;
         this.guild = guild;
         this.channel = channel;
-        this.message = message;
-        this.args = args;
+        this.optionMappings = optionMappings;
         this.member = member;
+        this.event = event;
+    }
+
+    public CommandEvent(SubCommand command, User sender, GuildWrapper guild, TextChannel channel, List<OptionMapping> optionMappings, Member member, SlashCommandEvent event) {
+        this.subCommand = subCommand;
+        this.sender = sender;
+        this.guild = guild;
+        this.channel = channel;
+        this.optionMappings = optionMappings;
+        this.member = member;
+        this.event = event;
+    }
+
+
+    public SlashCommandEvent getEvent() {
+        return event;
     }
 
     public Command getCommand() {
         return command;
+    }
+
+    public SubCommand getSubCommand() {
+        return subCommand;
     }
 
     public User getSender() {
@@ -45,10 +69,6 @@ public class CommandEvent {
 
     public TextChannel getChannel() {
         return channel;
-    }
-
-    public Message getMessage() {
-        return message;
     }
 
     public GuildWrapper getGuild() {
@@ -63,14 +83,8 @@ public class CommandEvent {
         return this.channel.getType() == type;
     }
 
-
-    public String arg(int index) {
-        this.checkSizeArguments(index + 1);
-        return args[index];
-    }
-
-    public String[] getArgs() {
-        return args;
+    public List<OptionMapping> getOptionMappings() {
+        return optionMappings;
     }
 
     public int getInt(String arg) throws CommandException {
@@ -80,50 +94,50 @@ public class CommandEvent {
             return 0;
         }
     }
-    /**
-     * Является ли аргумент по индексу name
-     *
-     * @param index индект аргумента
-     * @param name  имя ignore case
-     * @return true, если да
-     */
-    public boolean has(int index, String name) {
-        this.checkSizeArguments(index + 1);
-        return args[index].equalsIgnoreCase(name);
-    }
+//    /**
+//     * Является ли аргумент по индексу name
+//     *
+//     * @param index индект аргумента
+//     * @param name  имя ignore case
+//     * @return true, если да
+//     */
+//    public boolean has(int index, String name) {
+//        this.checkSizeArguments(index + 1);
+//        return args[index].equalsIgnoreCase(name);
+//    }
 
 
-    public void argsToLowerCase0() {
-        argsToLowerCase(0);
-    }
+//    public void argsToLowerCase0() {
+//        argsToLowerCase(0);
+//    }
 
 
-    public void argsToLowerCase(int i) {
-        try {
-            this.args[i] = this.args[i].toLowerCase();
-        } catch (ArrayIndexOutOfBoundsException arrayIndexOutOfBoundsException) {}
-    }
-    /**
-     * Является ли аргумент по индексу name
-     *
-     * @param index     индект аргумента
-     * @param variables имя ignore case
-     * @return true, если да
-     */
-    public boolean has(int index, String... variables) {
-        this.checkSizeArguments(index + 1);
-        return Stream.of(variables).anyMatch(variable -> variable.equalsIgnoreCase(args[index]));
-    }
+//    public void argsToLowerCase(int i) {
+//        try {
+//            this.args[i] = this.args[i].toLowerCase();
+//        } catch (ArrayIndexOutOfBoundsException arrayIndexOutOfBoundsException) {}
+//    }
+//    /**
+//     * Является ли аргумент по индексу name
+//     *
+//     * @param index     индект аргумента
+//     * @param variables имя ignore case
+//     * @return true, если да
+//     */
+//    public boolean has(int index, String... variables) {
+//        this.checkSizeArguments(index + 1);
+//        return Stream.of(variables).anyMatch(variable -> variable.equalsIgnoreCase(args[index]));
+//    }
 
     /**
      * @return Выполнена ли команда без аргументов
      */
     public boolean isEmpty() {
-        return args.length == 0;
+        return optionMappings.size() == 0;
     }
 
     public int size() {
-        return args.length;
+        return optionMappings.size();
     }
 
     public boolean hasSize(int size) {
@@ -142,29 +156,29 @@ public class CommandEvent {
      * @
      */
     public void checkSizeArguments(int min) throws CommandException {
-        if (args.length < min) {
+        if (optionMappings.size() < min) {
             String message = guild.getMessage("ERROR_ARGUMENTS");
-            message = StringUtils.replace(message, "%usage%", command.getDescription(guild));
+            message = StringUtils.replace(message, "%usage%", command.getDescription(Language.getLanguage(guild.getLang())));
             message = StringUtils.replace(message, "%cmd%", guild.getPrefix()+command.getCommand());
-            this.message.reply(message).queue();
+            this.event.reply(message).setEphemeral(true).queue();
             throw new CommandException();
         }
     }
 
 
-    /**
-     * Объеденить аргументы в строку через пробел
-     *
-     * @param start первый аргумент
-     * @return
-     */
-    public String getArguments(int start) {
-        StringBuilder s = new StringBuilder();
-        for (int i = start; i < args.length; i++) {
-            s.append(i == start ? args[i] : ' ' + args[i]);
-        }
-        return s.toString();
-    }
+//    /**
+//     * Объеденить аргументы в строку через пробел
+//     *
+//     * @param start первый аргумент
+//     * @return
+//     */
+//    public String getArguments(int start) {
+//        StringBuilder s = new StringBuilder();
+//        for (int i = start; i < args.length; i++) {
+//            s.append(i == start ? args[i] : ' ' + args[i]);
+//        }
+//        return s.toString();
+//    }
 
     /**
      * Объеденить аргументы в строку через пробел
@@ -180,20 +194,20 @@ public class CommandEvent {
         return s.toString();
     }
 
-    /**
-     * Объеденить аргументы в строку через пробел
-     *
-     * @param start первый аргумент
-     * @param end последний аргумент
-     * @return
-     */
-    public String getArguments(int start, int end) {
-        StringBuilder s = new StringBuilder();
-        for (int i = start; i < end; i++) {
-            s.append(i == start ? args[i] : ' ' + args[i]);
-        }
-        return s.toString();
-    }
+//    /**
+//     * Объеденить аргументы в строку через пробел
+//     *
+//     * @param start первый аргумент
+//     * @param end последний аргумент
+//     * @return
+//     */
+//    public String getArguments(int start, int end) {
+//        StringBuilder s = new StringBuilder();
+//        for (int i = start; i < end; i++) {
+//            s.append(i == start ? args[i] : ' ' + args[i]);
+//        }
+//        return s.toString();
+//    }
 
 
 

@@ -6,11 +6,13 @@ import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import org.json.JSONArray;
 import org.springframework.stereotype.Component;
 import ru.rien.bot.modules.command.Command;
 import ru.rien.bot.modules.command.CommandEvent;
 import ru.rien.bot.modules.command.CommandType;
+import ru.rien.bot.modules.messsage.Language;
 import ru.rien.bot.objects.GuildWrapper;
 import ru.rien.bot.permission.Permission;
 import ru.rien.bot.utils.MessageUtils;
@@ -46,7 +48,7 @@ public class RandomAnime implements Command {
                 for (int i=0; i< genres_array.length(); i++){
                     genres.add(genres_array.getJSONObject(i).getString("name"));
                 }
-                event.getChannel().sendMessage(MessageUtils.getEmbed(user)
+                event.getEvent().replyEmbeds(MessageUtils.getEmbed(user)
                         .setTitle("Случайное аниме").
                                 addField("Название",  title_en+"("+title_jp+")", false).
                                 addField("Возраст",  rating, false).
@@ -57,7 +59,7 @@ public class RandomAnime implements Command {
         build())
                         .queue();
             }else{
-                MessageUtils.sendErrorMessage("Не смог найти", channel, user);
+                MessageUtils.sendErrorMessage("Не смог найти", event.getEvent().deferReply(true), user);
             }
         } catch (UnirestException e) {
             e.printStackTrace();
@@ -70,18 +72,23 @@ public class RandomAnime implements Command {
     }
 
     @Override
-    public String getDescription(GuildWrapper guildWrapper) {
+    public String getDescription(Language guildWrapper) {
         return "Случайное аниме";
     }
 
-    @Override
-    public String getUsage(GuildWrapper guildWrapper) {
-        return "{%}randomanime - Случайное аниме";
-    }
+//    @Override
+//    public String getUsage(GuildWrapper guildWrapper) {
+//        return "{%}randomanime - Случайное аниме";
+//    }
 
     @Override
     public CommandType getType() {
         return CommandType.ANIME;
+    }
+
+    @Override
+    public OptionData[] parameters() {
+        return new OptionData[0];
     }
 
     @Override

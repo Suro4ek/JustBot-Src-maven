@@ -8,6 +8,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.interactions.InteractionHook;
 import ru.rien.bot.api.music.player.Player;
 import ru.rien.bot.api.music.player.Playlist;
 import ru.rien.bot.api.music.player.Track;
@@ -35,7 +36,7 @@ public class YouTubeExtractor implements Extractor {
     }
 
     @Override
-    public void process(String input, Player player, Message message, User user) throws Exception {
+    public void process(String input, Player player, InteractionHook message, User user) throws Exception {
         if(player.getPlaylist().size()>200){
             return;
         }
@@ -43,15 +44,15 @@ public class YouTubeExtractor implements Extractor {
         try {
             item = GeneralUtils.resolveItem(player, input);
         } catch (IllegalArgumentException e) {
-            MessageUtils.editMessage(null, MessageUtils.getEmbed(user)
+            message.sendMessageEmbeds(MessageUtils.getEmbed(user)
                     .setDescription("Не удалось получить это видео/плейлист! Убедитесь, что URL-адрес указан правильно!")
-                    .setColor(Color.RED), message);
+                    .setColor(Color.RED).build()).queue();
             return;
         } catch (IllegalStateException e) {
             if (e.getMessage().contains("Vevo")) {
-                MessageUtils.editMessage(null, MessageUtils.getEmbed(user)
+                message.sendMessageEmbeds( MessageUtils.getEmbed(user)
                         .setDescription("Мы заблокированы от воспроизведения этого видео, как это происходит с Vevo!")
-                        .setColor(Color.RED), message);
+                        .setColor(Color.RED).build()).queue();
                 return;
             }
 //            MessageUtils.editMessage(null, MessageUtils.getEmbed(user)
@@ -105,7 +106,7 @@ public class YouTubeExtractor implements Extractor {
                     name.replace("`", "'"), input));
             if (audioTracks.size() > 1)
                 builder.addField("Количество песен:", String.valueOf(audioTracks.size()), true);
-            MessageUtils.editMessage(null, builder, message);
+            message.sendMessageEmbeds(builder.build()).queue();
         }
     }
 

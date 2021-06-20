@@ -7,6 +7,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioItem;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.interactions.InteractionHook;
 import ru.rien.bot.api.music.player.Player;
 import ru.rien.bot.api.music.player.Track;
 import ru.rien.bot.utils.MessageUtils;
@@ -19,7 +20,7 @@ public class RandomExtractor implements Extractor {
     }
 
     @Override
-    public void process(String input, Player player, Message message, User user) throws Exception {
+    public void process(String input, Player player, InteractionHook message, User user) throws Exception {
         int i = 0;
         for (String s : input.split(",")) {
             try {
@@ -34,8 +35,8 @@ public class RandomExtractor implements Extractor {
             } catch (FriendlyException ignored) {
             }
         }
-        MessageUtils.editMessage(null, MessageUtils.getEmbed()
-                .setDescription("+ " + i + " случайная песня в плейлист!"), message);
+        message.sendMessageEmbeds( MessageUtils.getEmbed()
+                .setDescription("+ " + i + " случайная песня в плейлист!").build()).queue();
     }
 
     @Override
