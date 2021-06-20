@@ -333,13 +333,13 @@ public class ModuleCommand extends ModuleDiscord {
                     return;
                 }
             }
-//            SubCommand subCommand = cmd.getSubCommands().stream().filter(subCommand1 ->
-//                    (subCommand1.getSubCommands().getName().equals(event.getSubcommandName())
-//            )).findFirst().orElse(null);
-//            if(subCommand != null){
-//                handleCommand(event, cmd, subCommand);
-//                return;
-//            }
+            SubCommand subCommand = cmd.getSubCommands().stream().filter(subCommand1 ->
+                    (subCommand1.getSubCommands().getName().equals(event.getSubcommandName())
+            )).findFirst().orElse(null);
+            if(subCommand != null){
+                handleCommand(event, cmd, subCommand);
+                return;
+            }
             handleCommand(event, cmd);
         }
     }
