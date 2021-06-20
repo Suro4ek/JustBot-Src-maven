@@ -20,8 +20,6 @@ import ru.rien.bot.permission.Permission;
 import ru.rien.bot.utils.GuildUtils;
 import ru.rien.bot.utils.MessageUtils;
 
-import javax.xml.soap.Text;
-
 @Component
 public class PlayCommand implements Command {
 
