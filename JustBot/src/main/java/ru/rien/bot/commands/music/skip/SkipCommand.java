@@ -1,51 +1,66 @@
-//package ru.rien.bot.commands.music;
-//
-//import net.dv8tion.jda.api.MessageBuilder;
-//import net.dv8tion.jda.api.entities.Member;
-//import net.dv8tion.jda.api.entities.Message;
-//import net.dv8tion.jda.api.entities.TextChannel;
-//import net.dv8tion.jda.api.entities.User;
-//import net.dv8tion.jda.api.interactions.commands.build.OptionData;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.stereotype.Component;
-//import ru.rien.bot.api.music.PlayerManager;
-//import ru.rien.bot.api.music.player.Track;
-//import ru.rien.bot.modules.command.Command;
-//import ru.rien.bot.modules.command.CommandEvent;
-//import ru.rien.bot.modules.command.CommandType;
-//import ru.rien.bot.modules.dsBot.ModuleDsBot;
-//import ru.rien.bot.modules.messsage.Language;
-//import ru.rien.bot.objects.Getters;
-//import ru.rien.bot.objects.GuildWrapper;
-//import ru.rien.bot.permission.Permission;
-//import ru.rien.bot.utils.MessageUtils;
-//import ru.rien.bot.utils.buttons.ButtonGroupConstants;
-//import ru.rien.bot.utils.votes.VoteGroup;
-//import ru.rien.bot.utils.votes.VoteUtil;
-//
-//import java.util.ArrayList;
-//import java.util.List;
-//import java.util.UUID;
-//import java.util.concurrent.TimeUnit;
-//
-//@Component
-//public class SkipCommand implements Command {
-//    private static final UUID skipUUID = UUID.randomUUID();
-//
-//    private final ModuleDsBot moduleDsBot;
-//
-//    public SkipCommand(ModuleDsBot moduleDsBot) {
-//        this.moduleDsBot = moduleDsBot;
-//    }
-//
-//    @Override
-//    public void execute(CommandEvent event) {
+package ru.rien.bot.commands.music.skip;
+
+import com.google.common.collect.Lists;
+import net.dv8tion.jda.api.MessageBuilder;
+import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
+import net.dv8tion.jda.api.requests.restaction.interactions.ReplyAction;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import ru.rien.bot.api.music.PlayerManager;
+import ru.rien.bot.api.music.player.Track;
+import ru.rien.bot.modules.command.Command;
+import ru.rien.bot.modules.command.CommandEvent;
+import ru.rien.bot.modules.command.CommandType;
+import ru.rien.bot.modules.command.SubCommand;
+import ru.rien.bot.modules.dsBot.JustBotManager;
+import ru.rien.bot.modules.dsBot.ModuleDsBot;
+import ru.rien.bot.modules.messsage.Language;
+import ru.rien.bot.objects.Getters;
+import ru.rien.bot.objects.GuildWrapper;
+import ru.rien.bot.permission.Permission;
+import ru.rien.bot.utils.MessageUtils;
+import ru.rien.bot.utils.buttons.ButtonGroupConstants;
+import ru.rien.bot.utils.votes.VoteGroup;
+import ru.rien.bot.utils.votes.VoteUtil;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+
+@Component
+public class SkipCommand implements Command {
+    private static final UUID skipUUID = UUID.randomUUID();
+
+    private final ModuleDsBot moduleDsBot;
+
+    public SkipCommand(ModuleDsBot moduleDsBot) {
+        this.moduleDsBot = moduleDsBot;
+    }
+
+    public static boolean checkSkip(TextChannel channel, PlayerManager musicManager, GuildWrapper guild,
+                                 Member member, ReplyAction replyAction){
+        if (!channel.getGuild().getAudioManager().isConnected() ||
+                musicManager.getPlayer(channel.getGuild().getId()).getPlayingTrack() == null) {
+            MessageUtils.sendErrorMessage(guild.getMessage("SKIP_NOT_PLAY"), replyAction);
+            return true;
+        }
+        if (member.getVoiceState().inVoiceChannel() && !channel.getGuild().getSelfMember().getVoiceState().getChannel()
+                .getId()
+                .equals(member.getVoiceState().getChannel().getId())
+                && ! JustBotManager.instance().getGuild(channel.getGuild().getId()).getPermissions().hasPermission(member, Permission.SKIP_FORCE)) {
+            MessageUtils.sendErrorMessage(guild.getMessage("SKIP_YOU_NOT_CHANNEL"), replyAction);
+            return true;
+        }
+        return false;
+    }
+    @Override
+    public void execute(CommandEvent event) {
 //        TextChannel channel = event.getChannel();
 //        Member member = event.getMember();
-//        String[] args = event.getArgs();
 //        GuildWrapper guild = event.getGuild();
 //        User sender = event.getSender();
-//        boolean songMessage = message.getAuthor().getIdLong() == Getters.getSelfUser().getIdLong();
 //        PlayerManager musicManager = moduleDsBot.getMusicManager();
 //        if (!channel.getGuild().getAudioManager().isConnected() ||
 //                musicManager.getPlayer(channel.getGuild().getId()).getPlayingTrack() == null) {
@@ -63,8 +78,8 @@
 //        if (args.length == 0 && currentTrack.getMeta().get("requester").equals(sender.getId())) {
 //            MessageUtils.sendAutoDeletedMessage(new MessageBuilder().append(guild.getMessage("SKIP_REQUESTER")).build(), TimeUnit.SECONDS.toMillis(5), channel);
 //            musicManager.getPlayer(guild.getGuildId()).skip();
-//            if (songMessage)
-//                SongCommand.updateSongMessage(sender,guild, message, channel);
+////            if (songMessage)
+////                SongCommand.updateSongMessage(sender,guild, message, channel);
 //            return;
 //        }
 //
@@ -144,39 +159,48 @@
 //            } else
 //                MessageUtils.sendUsage(this,event.getGuild(), channel, sender, args);
 //        }
-//    }
-//
-//    public static UUID getSkipUUID() {
-//        return skipUUID;
-//    }
-//
+    }
+
+    public static UUID getSkipUUID() {
+        return skipUUID;
+    }
+
+    @Override
+    public String getCommand() {
+        return "skip";
+    }
+
+    @Override
+    public String getDescription(Language guild) {
+        return "ss";
+    }
+
 //    @Override
-//    public String getCommand() {
-//        return "skip";
+//    public String getUsage(GuildWrapper guild) {
+//        return guild.getMessage("SKIP_USAGE");
 //    }
-//
-//    @Override
-//    public String getDescription(Language guild) {
-//        return guild.getMessage("SKIP_DESCRIPTION");
-//    }
-//
-////    @Override
-////    public String getUsage(GuildWrapper guild) {
-////        return guild.getMessage("SKIP_USAGE");
-////    }
-//
-//    @Override
-//    public Permission getPermission() {
-//        return Permission.SKIP_COMMAND;
-//    }
-//
-//    @Override
-//    public CommandType getType() {
-//        return CommandType.MUSIC;
-//    }
-//
-//    @Override
-//    public OptionData[] parameters() {
-//        return new OptionData[0];
-//    }
-//}
+
+
+    @Override
+    public List<SubCommand> getSubCommands(boolean admin) {
+        return Lists.newArrayList(new SkipCancelCommand(moduleDsBot),
+                new SkipForceCommand(moduleDsBot),
+                new SkipStartCommand(moduleDsBot),
+                new SkipSubCommand(moduleDsBot));
+    }
+
+    @Override
+    public Permission getPermission() {
+        return Permission.SKIP_COMMAND;
+    }
+
+    @Override
+    public CommandType getType() {
+        return CommandType.MUSIC;
+    }
+
+    @Override
+    public OptionData[] parameters() {
+        return new OptionData[0];
+    }
+}

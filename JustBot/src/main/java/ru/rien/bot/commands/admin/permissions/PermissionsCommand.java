@@ -438,7 +438,6 @@ public class PermissionsCommand implements Command {
         return Permission.ALL_PERMISSIONS;
     }
 
-
     @Override
     public CommandType getType() {
         return CommandType.ADMIN;

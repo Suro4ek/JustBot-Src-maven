@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import net.dv8tion.jda.api.requests.restaction.interactions.ReplyAction;
 import ru.rien.bot.modules.command.CommandEvent;
+import ru.rien.bot.modules.command.CommandType;
 import ru.rien.bot.modules.command.SubCommand;
 import ru.rien.bot.permission.Group;
 import ru.rien.bot.utils.MessageUtils;
@@ -40,6 +41,11 @@ public class PermissionsUnlinkGroupCommand implements SubCommand {
                     replyAction, event.getSender());
         }
 
+    }
+
+    @Override
+    public CommandType getType() {
+        return CommandType.ADMIN;
     }
 
     @Override

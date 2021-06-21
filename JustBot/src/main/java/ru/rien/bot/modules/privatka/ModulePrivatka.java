@@ -58,7 +58,7 @@ public class ModulePrivatka extends ModuleDiscord {
     }
 
     public void createprivatka(Category category, Member member,@NotNull GenericGuildEvent event, GuildWrapper guildWrapper){
-        category.createVoiceChannel("Приватка: " + member.getEffectiveName()).setUserlimit(5).addMemberPermissionOverride(member.getIdLong(),
+        category.createVoiceChannel(member.getEffectiveName()).setUserlimit(5).addMemberPermissionOverride(member.getIdLong(),
                 EnumSet.of(Permission.VIEW_CHANNEL, Permission.VOICE_CONNECT), null).queue(voiceChannel -> {
             privatkaService.createPrivatka(voiceChannel.getIdLong(), guildWrapper, member.getIdLong());
             try {

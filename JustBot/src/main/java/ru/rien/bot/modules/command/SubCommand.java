@@ -16,5 +16,7 @@ public interface SubCommand {
         return JustBotManager.instance().getGuild(chan.getGuild().getId()).getPermissions();
     }
 
+    CommandType getType();
+
     OptionData[] parameters();
 }

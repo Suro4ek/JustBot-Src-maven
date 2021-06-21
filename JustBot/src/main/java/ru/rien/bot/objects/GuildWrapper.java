@@ -8,7 +8,6 @@ import net.dv8tion.jda.api.entities.User;
 import org.jetbrains.annotations.Nullable;
 import ru.rien.bot.entity.GuildEntity;
 import ru.rien.bot.entity.ReactionEntity;
-import ru.rien.bot.modules.dota2.Vote;
 import ru.rien.bot.modules.dsBot.ModuleDsBot;
 import ru.rien.bot.modules.messsage.Language;
 import ru.rien.bot.modules.reactinrole.ReactionLoader;
@@ -30,7 +29,7 @@ public class GuildWrapper {
     private PerGuildPermissions permissions = new PerGuildPermissions();
     private Set<String> autoAssignRoles = new HashSet<>();
     private Set<String> selfAssignRoles = new HashSet<>();
-    public Vote vote;
+//    public Vote vote;
     private ReactionLoader reactionLoader = new ReactionLoader(this);
     private long caterogy_id = 0;
     private long creeate_voice_channel = 0;
@@ -82,13 +81,13 @@ public class GuildWrapper {
         return settings;
     }
 
-    public void setVote(Vote vote) {
-        this.vote = vote;
-    }
-
-    public Vote getVote() {
-        return vote;
-    }
+//    public void setVote(Vote vote) {
+//        this.vote = vote;
+//    }
+//
+//    public Vote getVote() {
+//        return vote;
+//    }
 
     /**
      * <b>Do not use</b>

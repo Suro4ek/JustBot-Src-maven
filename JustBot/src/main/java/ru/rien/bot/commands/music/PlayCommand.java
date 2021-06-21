@@ -1,10 +1,7 @@
 package ru.rien.bot.commands.music;
 
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.entities.VoiceChannel;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
@@ -23,7 +20,6 @@ import ru.rien.bot.utils.MessageUtils;
 @Component
 public class PlayCommand implements Command {
 
-
     @Override
     public void execute(CommandEvent event) {
         Member member = event.getMember();
@@ -33,7 +29,8 @@ public class PlayCommand implements Command {
         event.getEvent().deferReply(false).queue();
         InteractionHook interactionHook = event.getEvent().getHook();
         interactionHook.setEphemeral(false);
-        String args = event.getOptionMappings().get(0).getAsString().split(" ")[0];
+        String fullargs = event.getOptionMappings().get(0).getAsString();
+        String args = fullargs.split(" ")[0];
         if (member.getVoiceState() != null && member.getVoiceState().inVoiceChannel()) {
                 if (guild.getGuild().getAudioManager().isAttemptingToConnect()) {
                     MessageUtils.sendErrorMessage(guild.getMessage("PLAY_CONNECTING"), replyAction);
@@ -46,12 +43,11 @@ public class PlayCommand implements Command {
                     return;
                 }
                 GuildUtils.joinChannel(guild.getGuild(), replyAction, member);
-        }
-        if (args.startsWith("http") || args.startsWith("www.")) {
-            VideoThread.getThread(args, interactionHook, guild, sender).start();
-        } else {
-            args = event.getOptionMappings().get(0).getAsString();
-            VideoThread.getSearchThread(args, interactionHook, guild, sender).start();
+            if (args.startsWith("http") || args.startsWith("www.")) {
+                VideoThread.getThread(args, interactionHook, guild, sender).start();
+            } else {
+                VideoThread.getSearchThread(fullargs, interactionHook, guild, sender).start();
+            }
         }
     }
 

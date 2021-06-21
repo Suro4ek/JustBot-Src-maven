@@ -56,20 +56,20 @@ public class VoteUtil {
 
         myButtons.addAll(buttonGroup);
 
-//        Message voteMessage = ButtonUtil.sendReturnedButtonedMessage(channel, votesEmbed.build(), buttonGroup);
-//        group.setVoteMessage(voteMessage);
-//
-//        new JustBotTask("Votes-" + voteMessage.getId()){
-//
-//            @Override
-//            public void run() {
-//                voteRunnable.run(group.won());
-//                groupMap.remove(group.getMessageDesc() + channel.getGuild().getId());
-//                runnableMap.remove(group.getMessageDesc() + channel.getGuild().getId());
-//                channel.deleteMessageById(voteMessage.getId()).queue();
-//            }
-//
-//        }.delay(timeout);
+        Message voteMessage = ButtonUtil.sendReturnedButtonedMessage(channel, votesEmbed.build(), buttonGroup);
+        group.setVoteMessage(voteMessage);
+
+        new JustBotTask("Votes-" + voteMessage.getId()){
+
+            @Override
+            public void run() {
+                voteRunnable.run(group.won());
+                groupMap.remove(group.getMessageDesc() + channel.getGuild().getId());
+                runnableMap.remove(group.getMessageDesc() + channel.getGuild().getId());
+                channel.deleteMessageById(voteMessage.getId()).queue();
+            }
+
+        }.delay(timeout);
     }
 
     public static VoteGroup getVoteGroup(UUID uuid, Guild guild) {
@@ -86,6 +86,7 @@ public class VoteUtil {
         long message = group.getMessageId();
         groupMap.remove(uuid + guild.getId());
         Scheduler.cancelTask("Vote-" + message);
+        ButtonUtil.getButtons().remove(String.valueOf(message));
         group.getVoteMessage().getChannel().deleteMessageById(group.getMessageId()).queue();
     }
 
@@ -95,6 +96,7 @@ public class VoteUtil {
         groupMap.remove(uuid + guild.getId());
         runnableMap.get(uuid + guild.getId()).run(group.won());
         runnableMap.remove(uuid + guild.getId());
+        ButtonUtil.getButtons().remove(String.valueOf(message));
         Scheduler.cancelTask("Votes-" + message);
         group.getVoteMessage().getChannel().deleteMessageById(group.getVoteMessage().getId()).queue();
     }

@@ -27,7 +27,6 @@ public class RandomAnime implements Command {
     @Override
     public void execute(CommandEvent event) {
         User user = event.getSender();
-        TextChannel channel = event.getChannel();
         try {
             Random random  = new Random();
             int randomInt = random.nextInt(999) + 1;
@@ -56,7 +55,7 @@ public class RandomAnime implements Command {
                                 addField("Рейтинг",  score+"/10", false).
                                 addField("Жанры",  genres.stream().collect(Collectors.joining(",")), false).
                                 setImage(image_url).
-        build())
+                            build())
                         .queue();
             }else{
                 MessageUtils.sendErrorMessage("Не смог найти", event.getEvent().deferReply(true), user);

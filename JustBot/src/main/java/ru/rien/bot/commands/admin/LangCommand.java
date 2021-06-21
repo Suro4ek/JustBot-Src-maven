@@ -36,7 +36,7 @@ public class LangCommand implements Command {
 
     @Override
     public CommandType getType() {
-        return CommandType.GENERAL;
+        return CommandType.ADMIN;
     }
 
     @Override

@@ -12,15 +12,17 @@ public enum Permission {
     // Все права
     ALL_PERMISSIONS("*"),
     // Категории
-    CATEGORY_GENERAL("category.general", false, CommandType.GENERAL),
+    CATEGORY_GENERAL("category.general", true, CommandType.GENERAL),
     CATEGORY_MUSIC("category.music", false, CommandType.MUSIC),
     CATEGORY_RANDOM("category.random", false, CommandType.RANDOM),
     CATEGORY_ANIME("category.anime", false, CommandType.ANIME),
+    CATEGORY_ADMIN("category.admin", true, CommandType.ADMIN),
     // Валюта
     CONVERT_COMMAND("convert", true),
     CURRENCY_COMMAND("currency", true),
     // Основные
     USAGE_COMMAND("usage", true),
+    ASTATS_COMMAND("astats", true),
     HELP_COMMAND("help", true),
     INFO_COMMAND("info", true),
     INVITE_COMMAND("invite", true),
@@ -90,7 +92,7 @@ public enum Permission {
     SKIP_CANCEL("skip.cancel", false),
     SONG_COMMAND("song", true),
     SONGNICK_COMMAND("songnick", false),
-    STOP_COMMAND("stop", false),
+    STOP_COMMAND("stop", true),
     KILL_COMMAND("kill", false),
     //Аниме
     RANDOMANIME_COMMAND("random_anime", true),

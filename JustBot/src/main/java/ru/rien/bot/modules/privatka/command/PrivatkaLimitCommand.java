@@ -9,6 +9,7 @@ import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import net.dv8tion.jda.api.requests.restaction.interactions.ReplyAction;
 import ru.rien.bot.entity.PrivatkaEntity;
 import ru.rien.bot.modules.command.CommandEvent;
+import ru.rien.bot.modules.command.CommandType;
 import ru.rien.bot.modules.command.SubCommand;
 import ru.rien.bot.objects.GuildWrapper;
 import ru.rien.bot.services.PrivatkaService;
@@ -46,6 +47,11 @@ public class PrivatkaLimitCommand implements SubCommand {
         } else {
             MessageUtils.sendErrorMessage(MessageUtils.getEmbed(sender).setDescription("У вас нет приватки").build(),  replyAction);
         }
+    }
+
+    @Override
+    public CommandType getType() {
+        return CommandType.GENERAL;
     }
 
     @Override

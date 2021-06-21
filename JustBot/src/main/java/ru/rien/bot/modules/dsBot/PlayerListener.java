@@ -8,7 +8,7 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.TextChannel;
 import ru.rien.bot.api.music.player.Player;
 import ru.rien.bot.api.music.player.Track;
-//import ru.rien.bot.commands.music.SkipCommand;
+//import ru.rien.bot.commands.music.skip.SkipCommand;
 //import ru.rien.bot.commands.music.SongCommand;
 import ru.rien.bot.objects.Getters;
 import ru.rien.bot.objects.GuildWrapper;

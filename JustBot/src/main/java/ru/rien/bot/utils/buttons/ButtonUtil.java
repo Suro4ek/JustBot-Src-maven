@@ -47,13 +47,15 @@ public class ButtonUtil {
      *
      * @param channel The {@link TextChannel} to send it to.
      * @param embed   The {@link MessageEmbed} to send.
-     * @param buttons The buttons to display.
      */
-//    public static Message sendReturnedButtonedMessage(TextChannel channel, MessageEmbed embed, List<MyButton> buttons) {
-//        Message message = channel.sendMessage(embed).complete();
-//        handleSuccessConsumer(channel, message, buttons);
-//        return message;
-//    }
+    public static Message sendReturnedButtonedMessage(TextChannel channel, MessageEmbed embed, List<MyButton> buttons2) {
+        Button[] buttons1 = (Button[])buttons2.stream().map(MyButton::getButton).toArray();
+        Message message = channel.sendMessageEmbeds(embed)
+                .setActionRow(buttons1)
+                .complete();
+        buttons.put(message.getId(), buttons2);
+        return message;
+    }
 
     /**
      * Sends a string message with a set of buttons.
@@ -65,6 +67,7 @@ public class ButtonUtil {
     public static void sendButtonedMessage(Guild guild, InteractionHook channel, String text, List<MyButton> buttons) {
         handleSuccessConsumer(guild,channel, text, buttons);
     }
+
 
     private static void handleSuccessConsumer(InteractionHook channel, String  message, List<MyButton> buttonGroup) {
         Button[] buttons1 = (Button[])buttonGroup.stream().map(MyButton::getButton).toArray();

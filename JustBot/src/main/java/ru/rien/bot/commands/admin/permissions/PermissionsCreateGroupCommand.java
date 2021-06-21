@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import net.dv8tion.jda.api.requests.restaction.interactions.ReplyAction;
 import ru.rien.bot.modules.command.CommandEvent;
+import ru.rien.bot.modules.command.CommandType;
 import ru.rien.bot.modules.command.SubCommand;
 import ru.rien.bot.objects.GuildWrapperLoader;
 import ru.rien.bot.permission.Group;
@@ -41,6 +42,11 @@ public class PermissionsCreateGroupCommand implements SubCommand {
         } else {
             MessageUtils.sendErrorMessage("Группа уже существует", replyAction);
         }
+    }
+
+    @Override
+    public CommandType getType() {
+        return CommandType.ADMIN;
     }
 
     @Override

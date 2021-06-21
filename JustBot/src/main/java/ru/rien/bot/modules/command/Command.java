@@ -25,7 +25,7 @@ public interface Command {
 
 //    String getUsage(GuildWrapper guildWrapper);
 
-    default List<SubCommand> getSubCommands(){
+    default List<SubCommand> getSubCommands(boolean admin){
         return new ArrayList<>();
     }
 

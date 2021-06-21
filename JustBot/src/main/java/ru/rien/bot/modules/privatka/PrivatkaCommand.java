@@ -9,11 +9,12 @@ import ru.rien.bot.modules.command.CommandType;
 import ru.rien.bot.modules.command.SubCommand;
 import ru.rien.bot.modules.messsage.Language;
 import ru.rien.bot.modules.privatka.command.*;
-import ru.rien.bot.objects.GuildWrapper;
 import ru.rien.bot.permission.Permission;
 import ru.rien.bot.services.PrivatkaService;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class PrivatkaCommand implements Command {
@@ -250,8 +251,9 @@ public class PrivatkaCommand implements Command {
     }
 
     @Override
-    public List<SubCommand> getSubCommands() {
-        return Lists.newArrayList(new PrivatkaInitCommand(),
+    public List<SubCommand> getSubCommands(boolean admin) {
+        ArrayList<SubCommand> subCommands = Lists.newArrayList(
+                new PrivatkaInitCommand(),
                 new PrivatkaLimitCommand(privatkaService),
                 new PrivatkaLockCommand(privatkaService),
                 new PrivatkaOwnerCommand(privatkaService),
@@ -260,6 +262,15 @@ public class PrivatkaCommand implements Command {
                 new PrivatkaTextCommand(privatkaService),
                 new PrivatkaUnlockCommand(privatkaService),
                 new PrivatkaNameCommand(privatkaService));
+        if(admin){
+            return subCommands.stream().filter(subCommand -> (
+                    subCommand.getType() == CommandType.ADMIN
+            )).collect(Collectors.toList());
+        }else{
+            return subCommands.stream().filter(subCommand -> (
+                subCommand.getType() != CommandType.ADMIN
+            )).collect(Collectors.toList());
+        }
     }
 
     @Override

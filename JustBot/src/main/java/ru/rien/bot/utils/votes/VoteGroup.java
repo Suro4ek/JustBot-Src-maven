@@ -104,6 +104,13 @@ public class VoteGroup {
             }
             return Vote.NONE;
         }
+        public static Vote parseVote(boolean vote) {
+            if(vote){
+                return Vote.YES;
+            }else{
+                return Vote.NO;
+            }
+        }
     }
 
     public interface VoteRunnable {

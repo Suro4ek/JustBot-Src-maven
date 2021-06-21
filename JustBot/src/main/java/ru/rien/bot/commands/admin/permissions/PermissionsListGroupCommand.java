@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import ru.rien.bot.modules.command.CommandEvent;
+import ru.rien.bot.modules.command.CommandType;
 import ru.rien.bot.modules.command.SubCommand;
 import ru.rien.bot.permission.Group;
 import ru.rien.bot.utils.GeneralUtils;
@@ -54,6 +55,11 @@ public class PermissionsListGroupCommand  implements SubCommand {
 
         PaginationUtil.sendEmbedPagedMessage(pe.build(), page - 1, interactionHook, event.getSender(), ButtonGroupConstants.PERMISSIONS_GROUP);
 
+    }
+
+    @Override
+    public CommandType getType() {
+        return CommandType.ADMIN;
     }
 
     @Override

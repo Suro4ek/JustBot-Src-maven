@@ -1,4 +1,4 @@
-package ru.rien.bot.commands.anime;
-
-public class RandomManga {
-}
+//package ru.rien.bot.commands.anime;
+//
+//public class RandomManga {
+//}

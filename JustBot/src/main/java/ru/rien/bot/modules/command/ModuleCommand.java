@@ -2,6 +2,7 @@ package ru.rien.bot.modules.command;
 
 import com.google.common.collect.Sets;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
@@ -20,6 +21,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import ru.rien.bot.module.ModuleDiscord;
 import ru.rien.bot.modules.messsage.Language;
+import ru.rien.bot.modules.privatka.PrivatkaCommand;
 import ru.rien.bot.objects.GuildWrapper;
 import ru.rien.bot.utils.GuildUtils;
 import ru.rien.bot.utils.MessageUtils;
@@ -41,6 +43,7 @@ import java.util.stream.Collectors;
 public class ModuleCommand extends ModuleDiscord {
 
     private static Set<Command> commands = Sets.newConcurrentHashSet();
+    private static long OWNER_SERVER_ID = 809053595722842153L;
     private Map<String, Integer> spamMap = new ConcurrentHashMap<>();
     public static final ThreadGroup COMMAND_THREADS = new ThreadGroup("Command Threads");
     private static final ExecutorService COMMAND_POOL = Executors.newFixedThreadPool(4, r ->
@@ -83,25 +86,74 @@ public class ModuleCommand extends ModuleDiscord {
         registerListenerThis();
         getLogger().info("Loading commands...");
         CommandListUpdateAction commands1 = getModuleDsBot().getJda().updateCommands();
+        GuildWrapper guildWrapper = getModuleDsBot().getManager().getGuild(OWNER_SERVER_ID+"");
+        Guild guild = guildWrapper.getGuild();
+        CommandListUpdateAction commands2 = guild.updateCommands();
         configurableApplicationContext.getBeansOfType(Command.class).forEach((s, command) -> {
             commands.add(command);
-            if(command.parameters().length == 0){
-                commands1.addCommands(new CommandData(command.getCommand(),
-                        command.getDescription(Language.RUSSIAN))
-                        .addSubcommandGroups(command.getSubCommandGruops().stream()
-                                .map(subCommandGroups ->
-                                        subCommandGroups.getSubcommandGroup().addSubcommands(
-                                                subCommandGroups.subcommands().stream().map(subCommand -> subCommand.getSubCommands().addOptions(subCommand.parameters()))
-                                        .toArray(SubcommandData[]::new))).toArray(SubcommandGroupData[]::new))
-                        .addSubcommands(command.getSubCommands().stream().
-                                map(subCommand -> subCommand.getSubCommands().addOptions(subCommand.parameters())).toArray(SubcommandData[]::new)));
+            if(command.getType() != CommandType.ADMIN) {
+                if(command.getSubCommands(true).isEmpty()) {
+                    if (command.parameters().length == 0) {
+                        commands1.addCommands(new CommandData(command.getCommand(),
+                                command.getDescription(Language.RUSSIAN))
+                                .addSubcommandGroups(command.getSubCommandGruops().stream()
+                                        .map(subCommandGroups ->
+                                                subCommandGroups.getSubcommandGroup().addSubcommands(
+                                                        subCommandGroups.subcommands().stream().map(subCommand -> subCommand.getSubCommands().addOptions(subCommand.parameters()))
+                                                                .toArray(SubcommandData[]::new))).toArray(SubcommandGroupData[]::new))
+                                .addSubcommands(command.getSubCommands(false).stream().
+                                        map(subCommand -> subCommand.getSubCommands().addOptions(subCommand.parameters())).toArray(SubcommandData[]::new)));
+                    } else {
+                        commands1.addCommands(new CommandData(command.getCommand(),
+                                command.getDescription(Language.RUSSIAN)).
+                                addOptions(command.parameters()));
+                    }
+                }else {
+                    if (command.parameters().length == 0) {
+                        if (!command.getSubCommands(false).isEmpty()) {
+                            commands1.addCommands(new CommandData(command.getCommand(),
+                                    command.getDescription(Language.RUSSIAN))
+                                    .addSubcommandGroups(command.getSubCommandGruops().stream()
+                                            .map(subCommandGroups ->
+                                                    subCommandGroups.getSubcommandGroup().addSubcommands(
+                                                            subCommandGroups.subcommands().stream().map(subCommand -> subCommand.getSubCommands().addOptions(subCommand.parameters()))
+                                                                    .toArray(SubcommandData[]::new))).toArray(SubcommandGroupData[]::new))
+                                    .addSubcommands(command.getSubCommands(false).stream().
+                                            map(subCommand -> subCommand.getSubCommands().addOptions(subCommand.parameters())).toArray(SubcommandData[]::new)));
+                        }
+                        commands2.addCommands(new CommandData(command.getCommand(),
+                                command.getDescription(Language.RUSSIAN))
+                                .addSubcommandGroups(command.getSubCommandGruops().stream()
+                                        .map(subCommandGroups ->
+                                                subCommandGroups.getSubcommandGroup().addSubcommands(
+                                                        subCommandGroups.subcommands().stream().map(subCommand -> subCommand.getSubCommands().addOptions(subCommand.parameters()))
+                                                                .toArray(SubcommandData[]::new))).toArray(SubcommandGroupData[]::new))
+                                .addSubcommands(command.getSubCommands(true).stream().
+                                        map(subCommand -> subCommand.getSubCommands().addOptions(subCommand.parameters())).toArray(SubcommandData[]::new)));
+                    }
+                }
             }else{
-                commands1.addCommands(new CommandData(command.getCommand(),
-                        command.getDescription(Language.RUSSIAN)).
-                        addOptions(command.parameters()));
+                    if (command.parameters().length == 0) {
+                        commands2.addCommands(new CommandData(command.getCommand(),
+                                command.getDescription(Language.RUSSIAN))
+                                .addSubcommandGroups(command.getSubCommandGruops().stream()
+                                        .map(subCommandGroups ->
+                                                subCommandGroups.getSubcommandGroup().addSubcommands(
+                                                        subCommandGroups.subcommands().stream().map(subCommand -> subCommand.getSubCommands().addOptions(subCommand.parameters()))
+                                                                .toArray(SubcommandData[]::new))).toArray(SubcommandGroupData[]::new))
+                                .addSubcommands(command.getSubCommands(true).stream().
+                                        map(subCommand -> subCommand.getSubCommands().addOptions(subCommand.parameters())).toArray(SubcommandData[]::new)));
+                    } else {
+                        commands2.addCommands(new CommandData(command.getCommand(),
+                                command.getDescription(Language.RUSSIAN)).
+                                addOptions(command.parameters()));
+                    }
             }
         });
-        commands1.queue(commands2 -> System.out.println(commands2.size()));
+        commands2.queue(commands3 -> {
+            System.out.println("guild commands " + commands3.size());
+        });
+        commands1.queue(commands4 -> System.out.println(commands4.size()));
         registerListener(new Events());
     }
 
@@ -318,7 +370,6 @@ public class ModuleCommand extends ModuleDiscord {
 //                return;
 //            }
 //        }
-
         Command cmd = this.getCommand(command);
         if (cmd != null) {
             SubCommandGroups subCommandGroups = cmd.getSubCommandGruops().stream().filter(subCommand1 ->
@@ -333,9 +384,17 @@ public class ModuleCommand extends ModuleDiscord {
                     return;
                 }
             }
-            SubCommand subCommand = cmd.getSubCommands().stream().filter(subCommand1 ->
+
+            SubCommand subCommand = cmd.getSubCommands(false).stream().filter(subCommand1 ->
                     (subCommand1.getSubCommands().getName().equals(event.getSubcommandName())
             )).findFirst().orElse(null);
+            if(subCommand != null){
+                handleCommand(event, cmd, subCommand);
+                return;
+            }
+            subCommand = cmd.getSubCommands(true).stream().filter(subCommand2 ->
+                    (subCommand2.getSubCommands().getName().equals(event.getSubcommandName())
+                    )).findFirst().orElse(null);
             if(subCommand != null){
                 handleCommand(event, cmd, subCommand);
                 return;
