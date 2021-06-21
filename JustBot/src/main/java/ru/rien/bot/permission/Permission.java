@@ -35,6 +35,7 @@ public enum Permission {
     STATUS_COMMAND("status", true),
     USERINFO_COMMAND("userinfo", true),
     USERINFO_OTHER("userinfo.other", true),
+    TESTBUTTON("testbutton", true),
     // Модерация
     BAN_COMMAND("ban", false, net.dv8tion.jda.api.Permission.BAN_MEMBERS),
     SOFTBAN_COMMAND("softban", false, net.dv8tion.jda.api.Permission.BAN_MEMBERS),

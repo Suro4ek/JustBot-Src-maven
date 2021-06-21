@@ -68,7 +68,7 @@ public class ModuleReactionRole extends ModuleDiscord {
     public void onGuildMessageReactionRemoveEvent(@NotNull GuildMessageReactionRemoveEvent event) {
         if(!event.getMember().getUser().isBot()) {
             Guild guild = event.getGuild();
-            Long message_id = event.getMessageIdLong();
+            long message_id = event.getMessageIdLong();
             GuildWrapper guildWrapper = getModuleDsBot().getManager().getGuild(guild.getId());
             if (guildWrapper.getReactionLoader().getReactionEntities().get(message_id) != null) {
                 String emojiAsText = "";
