@@ -53,10 +53,8 @@ public class ModuleDsBot extends CommonModule {
     protected void onEnable() {
         JDABuilder builder = JDABuilder.createLight(getConfig().getOrSet("ds.token1","Nzk4ODQ0MDQ0MDEyMTU5MDA2.X_67fQ.adMhtrAhzRKmF50mO2xvG4FEaC4"));
         manager = new JustBotManager(this, guildService);
-        // Enable the bulk delete event
         builder.setBulkDeleteSplittingEnabled(false);
-        // Set activity (like "playing Something")
-        builder.setActivity(Activity.watching("/help"));
+        builder.setActivity(Activity.watching("soon website"));
         builder.enableCache(CacheFlag.VOICE_STATE);
         builder.enableIntents(GatewayIntent.GUILD_MESSAGES,
                 GatewayIntent.GUILD_MEMBERS,
