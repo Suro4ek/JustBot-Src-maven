@@ -62,6 +62,9 @@ public class MessageUtils {
     public static void sendInfoMessage(String message, ReplyAction replyAction, User sender) {
         sendMessage(MessageType.INFO, message, replyAction, sender);
     }
+    public static void sendInfoMessage(String message, ReplyAction replyAction) {
+        sendMessage(MessageType.INFO, message, replyAction);
+    }
 
     public static void sendErrorMessage(EmbedBuilder builder, TextChannel channel) {
         sendMessage(MessageType.ERROR, builder, channel);
