@@ -34,7 +34,7 @@ public class LeaveGuild implements Command {
                 MessageUtils.sendErrorMessage("Такой гильдии нет", replyAction);
             }
         }else {
-            MessageUtils.sendErrorMessage("Такой гильдии нет", replyAction);
+            MessageUtils.sendErrorMessage("Такой гильдии нет1", replyAction);
         }
 
     }
