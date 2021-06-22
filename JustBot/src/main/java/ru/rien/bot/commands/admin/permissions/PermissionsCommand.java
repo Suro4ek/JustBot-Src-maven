@@ -166,15 +166,7 @@ public class PermissionsCommand implements Command {
 //                        MessageUtils.sendSuccessMessage("Все права удалены группы : " + group.getName(), channel);
 //                        return;
 //                    } else if (args[2].equalsIgnoreCase("move") && args.length >= 4) {
-//                        int pos = GeneralUtils.getInt(args[3], -1);
-//                        if (pos < 1 || pos >= guild.getPermissions().getGroups().size()) {
-//                            MessageUtils.sendWarningMessage("Неверная позиция : " + args[3], channel);
-//                            return;
-//                        } else {
-//                            guild.getPermissions().moveGroup(group, pos - 1);
-//                            MessageUtils.sendSuccessMessage("Группа `" + groupString + "` сдвинута на позицию " + pos, channel, sender);
-//                            return;
-//                        }
+//
 //                    } else if (args[2].equalsIgnoreCase("clone") && args.length >= 4) {
 //                        if (guild.getPermissions().cloneGroup(group, args[3])) {
 //                            MessageUtils.sendMessage("Клон группы был создан", channel);
@@ -404,19 +396,7 @@ public class PermissionsCommand implements Command {
     }
 
 
-//    //TODO: Pagination
-//    @Override
-//    public String getUsage(GuildWrapper guild) {
-//        return "`{%}permissions group <группа> add|remove <права>` - Добавить права группе.\n" +
-//                "`{%}permissions group <группа> create|delete` - Создание/Удаление группы.\n" +
-//                "`{%}permissions group <группа> link <роль>` - Привязать к роли дискорда.\n" +
-//                "`{%}permissions group <группа> unlink` - Отвязать от ролей.\n" +
-//                "`{%}permissions group <группа> list [страница]` - Список прав группы.\n" +
-//                "`{%}permissions group <группа> massadd <@everyone/@here/role>` - Помещает всех с этой ролью в группу.\n" +
-//                "`{%}permissions group <группа> clear` - Очистить права группы!\n" +
-//                "`{%}permissions group <группа> move <место>` - Переместить группы по иерархии.\n" +
-//                "`{%}permissions group <группа> clone <новая_группа>` - Клонировать группу.\n" +
-//                "`{%}permissions group <группа> rename <новое_имя>` - Переименовать группу.\n\n" +
+
 //                "`{%}permissions user <Участник> group add|remove <Группа>` - Добавить/Удалить группу участнику.\n" +
 //                "`{%}permissions user <Участник> group list [страница]` - Просмотр групп участника.\n" +
 //                "`{%}permissions user <Участник> permission add|remove <права>` - Дать права участнику.\n" +
@@ -426,11 +406,12 @@ public class PermissionsCommand implements Command {
 //                "`{%}permissions groups` - Просмотр групп.\n" +
 //                "`{%}permissions list` - Просмотр всех прав бота!\n" +
 //                "`{%}permissions reset` - Очистить все.";
-//    }
+
 
     @Override
     public List<SubCommandGroups> getSubCommandGruops() {
-        return Lists.newArrayList(new PermissionsGroupCommand());
+        return Lists.newArrayList(new PermissionsGroupCommand(),
+                new PermissionsUserCommand());
     }
 
     @Override

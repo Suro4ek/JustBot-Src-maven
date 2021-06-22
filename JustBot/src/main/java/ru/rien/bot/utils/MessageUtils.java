@@ -193,6 +193,10 @@ public class MessageUtils {
         sendMessage(MessageType.WARNING, message, channel, sender);
     }
 
+    public static void sendWarningMessage(String message, ReplyAction channel, User sender) {
+        sendMessage(MessageType.WARNING, message, channel, sender);
+    }
+
     public static void sendMessage(MessageType type, String message, TextChannel channel, User sender) {
         sendMessage(type, message, channel, sender, 0);
     }
@@ -259,6 +263,10 @@ public class MessageUtils {
         sendMessage(MessageType.NEUTRAL, message, channel);
     }
 
+    public static void sendMessage(String message, ReplyAction channel) {
+        sendMessage(MessageType.NEUTRAL, message, channel);
+    }
+
     public static void sendSuccessMessage(String message, TextChannel channel, User sender) {
         sendMessage(MessageType.SUCCESS, message, channel, sender);
     }
@@ -271,5 +279,6 @@ public class MessageUtils {
     public static void sendSuccessMessage(String message, TextChannel channel) {
         sendMessage(MessageType.SUCCESS, message, channel);
     }
+
 }
 

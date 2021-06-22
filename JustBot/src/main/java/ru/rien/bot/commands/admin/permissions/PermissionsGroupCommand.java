@@ -1,11 +1,8 @@
 package ru.rien.bot.commands.admin.permissions;
 
 import com.google.common.collect.Lists;
-import net.dv8tion.jda.api.interactions.commands.OptionType;
-import net.dv8tion.jda.api.interactions.commands.build.OptionData;
-import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandGroupData;
-import ru.rien.bot.modules.command.CommandEvent;
+import ru.rien.bot.commands.admin.permissions.group.*;
 import ru.rien.bot.modules.command.SubCommand;
 import ru.rien.bot.modules.command.SubCommandGroups;
 
@@ -26,7 +23,13 @@ public class PermissionsGroupCommand implements SubCommandGroups {
                 new PermissionsDeleteGroupCommand(),
                 new PermissionsLinkGroupCommand(),
                 new PermissionsUnlinkGroupCommand(),
-                new PermissionsRemoveGroupCommand()
+                new PermissionsRemoveGroupCommand(),
+                new PermissionsClearGropCommand(),
+                new PermissionsCloneGroupCommand(),
+                new PermissionsDefaultGroupCommand(),
+                new PermissionsMassAddGroupCommand(),
+                new PermissionsMoveGroupCommand(),
+                new PermissionsRenameGroupCommand()
         );
     }
 }
