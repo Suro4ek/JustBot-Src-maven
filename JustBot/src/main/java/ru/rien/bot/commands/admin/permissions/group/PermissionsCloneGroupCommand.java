@@ -70,7 +70,7 @@ public class PermissionsCloneGroupCommand implements SubCommand {
     public OptionData[] parameters() {
         return new OptionData[]{new OptionData(OptionType.STRING, "guild_id", "ваш id сервера", true),
                 new OptionData(OptionType.STRING, "group", "group name", true),
-                new OptionData(OptionType.STRING, "new group", "новое имя группы", true)
+                new OptionData(OptionType.STRING, "new_group", "новое имя группы", true)
         };
     }
 }
