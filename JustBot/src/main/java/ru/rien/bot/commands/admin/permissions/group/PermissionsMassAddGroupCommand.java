@@ -92,7 +92,7 @@ public class PermissionsMassAddGroupCommand implements SubCommand {
     public OptionData[] parameters() {
         return new OptionData[]{new OptionData(OptionType.STRING, "guild_id", "ваш id сервера", true),
                 new OptionData(OptionType.STRING, "group", "group name", true),
-                new OptionData(OptionType.STRING, "who add", "example: @everyone, @here, role_id", true)
+                new OptionData(OptionType.STRING, "who_add", "example: @everyone, @here, role_id", true)
         };
     }
 }
