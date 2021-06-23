@@ -20,9 +20,11 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import ru.rien.bot.module.ModuleDiscord;
+import ru.rien.bot.modules.dsBot.JustBotManager;
 import ru.rien.bot.modules.messsage.Language;
 import ru.rien.bot.modules.privatka.PrivatkaCommand;
 import ru.rien.bot.objects.GuildWrapper;
+import ru.rien.bot.services.GuildService;
 import ru.rien.bot.utils.GuildUtils;
 import ru.rien.bot.utils.MessageUtils;
 
@@ -49,6 +51,7 @@ public class ModuleCommand extends ModuleDiscord {
     private static final ExecutorService COMMAND_POOL = Executors.newFixedThreadPool(4, r ->
        new Thread(COMMAND_THREADS, r, "Command Pool-"+COMMAND_THREADS.activeCount())
     );
+    private GuildService guildService;
     private static ModuleCommand instance;
 
     @Autowired
@@ -58,8 +61,9 @@ public class ModuleCommand extends ModuleDiscord {
 
     private final Pattern multiSpace = Pattern.compile(" {2,}");
 
-    public ModuleCommand() {
+    public ModuleCommand(GuildService guildService) {
         super("command", false);
+        this.guildService = guildService;
         instance = this;
     }
 
@@ -154,6 +158,23 @@ public class ModuleCommand extends ModuleDiscord {
             System.out.println("guild commands " + commands3.size());
         });
         commands1.queue(commands4 -> System.out.println(commands4.size()));
+        guildService.findall().forEach(guildEntity -> {
+            GuildWrapper guildWrapper1 = JustBotManager.instance().getGuildNoCache(guildEntity.getGuildid()+"");
+            if(guildWrapper1.getGuild() != null){
+                Guild guild1 = guildWrapper1.getGuild();
+                if(guildWrapper1.getSettings().getBlacklistCommands().size() != 0){
+                    guildWrapper1.getSettings().getBlacklistCommands().forEach(command -> {
+                        guild1.retrieveCommands().queue(commands3 -> {
+                            commands3.forEach(command1 -> {
+                                if(command1.getName().equalsIgnoreCase(command)){
+                                    command1.delete().queue();
+                                }
+                            });
+                        });
+                    });
+                }
+            }
+        });
         registerListener(new Events());
     }
 
@@ -170,7 +191,7 @@ public class ModuleCommand extends ModuleDiscord {
 //    }
 
     @Nullable
-    public Command getCommand(String s) {
+    public static Command getCommand(String s) {
         for (Command cmd : getCommands()) {
             if (cmd.getCommand().equalsIgnoreCase(s))
                 return cmd;

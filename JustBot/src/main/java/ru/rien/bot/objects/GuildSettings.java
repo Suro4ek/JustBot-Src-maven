@@ -11,7 +11,7 @@ public class GuildSettings {
     private boolean deleteCommands;
     private Set<Long> channelBlacklist;
     private Set<Long> userBlacklist;
-    private Set<Command> blacklistCommands;
+    private Set<String> blacklistCommands;
 
     public GuildSettings() {
         this.deleteCommands = true;
@@ -20,15 +20,15 @@ public class GuildSettings {
         this.blacklistCommands = Sets.newConcurrentHashSet();
     }
 
-    public Set<Command> getBlacklistCommands() {
+    public Set<String> getBlacklistCommands() {
         return blacklistCommands;
     }
 
-    public void removeBlackListCommands(Command command) {
+    public void removeBlackListCommands(String command) {
         this.blacklistCommands.remove(command);
     }
 
-    public void addBlackListCommands(Command command) {
+    public void addBlackListCommands(String command) {
         this.blacklistCommands.add(command);
     }
 

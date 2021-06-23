@@ -1,24 +1,25 @@
-//package ru.rien.bot.commands.admin;
-//
-//import net.dv8tion.jda.api.entities.TextChannel;
-//import net.dv8tion.jda.api.entities.User;
-//import net.dv8tion.jda.api.interactions.commands.build.OptionData;
-//import org.springframework.stereotype.Component;
-//import ru.rien.bot.modules.command.Command;
-//import ru.rien.bot.modules.command.CommandEvent;
-//import ru.rien.bot.modules.command.CommandType;
-//import ru.rien.bot.modules.command.ModuleCommand;
-//import ru.rien.bot.objects.GuildWrapper;
-//import ru.rien.bot.permission.Permission;
-//import ru.rien.bot.utils.GuildUtils;
-//import ru.rien.bot.utils.MessageUtils;
-//
-//import java.util.stream.Collectors;
-//
-//@Component
-//public class SettingsCommand implements Command {
-//    @Override
-//    public void execute(CommandEvent event) {
+package ru.rien.bot.commands.admin.settings;
+
+import com.google.common.collect.Lists;
+import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
+import org.springframework.stereotype.Component;
+import ru.rien.bot.commands.admin.settings.blacklist.BlackListGroupCommand;
+import ru.rien.bot.modules.command.*;
+import ru.rien.bot.modules.messsage.Language;
+import ru.rien.bot.objects.GuildWrapper;
+import ru.rien.bot.permission.Permission;
+import ru.rien.bot.utils.GuildUtils;
+import ru.rien.bot.utils.MessageUtils;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Component
+public class SettingsCommand implements Command {
+    @Override
+    public void execute(CommandEvent event) {
 //        String[] args= event.getArgs();
 //        TextChannel channel = event.getChannel();
 //        User sender = event.getSender();
@@ -86,22 +87,22 @@
 //                MessageUtils.sendUsage(this,event.getGuild(), channel, sender, args);
 //        }
 //        MessageUtils.sendUsage(this,event.getGuild(),event.getChannel(),event.getSender(),args);
-//    }
-//
-//    private String getBlackListedCommands(GuildWrapper wrapper) {
-//        if (wrapper.getSettings().getBlacklistCommands().isEmpty())
-//            return "Нет заблокированных команд!";
-//        return wrapper.getSettings().getBlacklistCommands().stream().map(Command::getCommand).collect(Collectors.joining(", "));
-//    }
-//
-//    @Override
-//    public String getCommand() {
-//        return "settings";
-//    }
-//
+    }
+
+    private String getBlackListedCommands(GuildWrapper wrapper) {
+        if (wrapper.getSettings().getBlacklistCommands().isEmpty())
+            return "Нет заблокированных команд!";
+        return String.join(", ", wrapper.getSettings().getBlacklistCommands());
+    }
+
+    @Override
+    public String getCommand() {
+        return "settings";
+    }
+
 //    @Override
 //    public String getDescription(GuildWrapper guild) {
-//        return "Настройки бота";
+//
 //    }
 //
 //    @Override
@@ -109,20 +110,30 @@
 //        return "{%}settings - Список команд\n" +
 //                "";
 //    }
-//
-//    @Override
-//    public CommandType getType() {
-//        return CommandType.ADMIN;
-//    }
-//
-//    @Override
-//    public OptionData[] parameters() {
-//        return new OptionData[0];
-//    }
-//
-//    @Override
-//    public Permission getPermission() {
-//        return Permission.ALL_PERMISSIONS;
-//    }
-//
-//}
+
+    @Override
+    public String getDescription(Language language) {
+        return "Настройки бота";
+    }
+
+    @Override
+    public CommandType getType() {
+        return CommandType.ADMIN;
+    }
+
+    @Override
+    public List<SubCommandGroups> getSubCommandGruops() {
+        return Lists.newArrayList(new BlackListGroupCommand());
+    }
+
+    @Override
+    public OptionData[] parameters() {
+        return new OptionData[0];
+    }
+
+    @Override
+    public Permission getPermission() {
+        return Permission.ALL_PERMISSIONS;
+    }
+
+}
