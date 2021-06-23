@@ -166,6 +166,7 @@ public class ModuleCommand extends ModuleDiscord {
                     guildWrapper1.getSettings().getBlacklistCommands().forEach(command -> {
                         guild1.retrieveCommands().queue(commands3 -> {
                             commands3.forEach(command1 -> {
+                                System.out.println(command1.getName());
                                 if(command1.getName().equalsIgnoreCase(command)){
                                     command1.delete().queue();
                                 }
