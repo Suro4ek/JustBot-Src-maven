@@ -64,13 +64,13 @@ public class JustBotManager {
         GuildEntity guildEntity = guildService.findById(Long.parseLong(guildId));
         if(guildEntity != null) {
             if (guildWrapper.getGuildEntity().getBlockcommads() == null) {
-                for (Command command : guildWrapper.getSettings().getBlacklistCommands()) {
+                for (String command : guildWrapper.getSettings().getBlacklistCommands()) {
                     List<String> s = new ArrayList<>();
-                    s.add(command.getCommand());
+                    s.add(command);
                     guildWrapper.getGuildEntity().setBlockcommads(s);
                 }
             } else {
-                guildWrapper.getGuildEntity().setBlockcommads(guildWrapper.getSettings().getBlacklistCommands().stream().map(Command::getCommand).collect(Collectors.toList()));
+                guildWrapper.getGuildEntity().setBlockcommads(new ArrayList<>(guildWrapper.getSettings().getBlacklistCommands()));
             }
 
             PerGuildPermissions permissions = guildWrapper.getPermissions();
