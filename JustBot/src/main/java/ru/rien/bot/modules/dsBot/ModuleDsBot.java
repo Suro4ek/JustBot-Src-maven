@@ -14,6 +14,7 @@ import ru.rien.bot.api.music.JDAMultiShard;
 import ru.rien.bot.api.music.PlayerManager;
 import ru.rien.bot.api.music.libraries.LibraryFactory;
 import ru.rien.bot.api.music.libraries.UnknownBindingException;
+import ru.rien.bot.config.YAMLConfig;
 import ru.rien.bot.module.CommonModule;
 import ru.rien.bot.music.QueueListener;
 import ru.rien.bot.objects.Getters;
@@ -48,10 +49,13 @@ public class ModuleDsBot extends CommonModule {
     @Autowired
     private GuildService guildService;
 
-    //test token  ODA5MDUzODI3MTUxNjkxODA4.YCPgFw.xBiasLgkdRtxL-Lm9cUeYsZlKo0
+    @Autowired
+    private YAMLConfig myConfig;
+
     @Override
     protected void onEnable() {
-        JDABuilder builder = JDABuilder.createLight(getConfig().getOrSet("ds.token1","Nzk4ODQ0MDQ0MDEyMTU5MDA2.X_67fQ.adMhtrAhzRKmF50mO2xvG4FEaC4"));
+        System.out.println("name: " + myConfig.getToken());
+        JDABuilder builder = JDABuilder.createLight(myConfig.getToken());
         manager = new JustBotManager(this, guildService);
         builder.setBulkDeleteSplittingEnabled(false);
         builder.setActivity(Activity.watching("soon website"));

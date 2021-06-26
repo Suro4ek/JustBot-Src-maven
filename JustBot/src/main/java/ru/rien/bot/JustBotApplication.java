@@ -12,8 +12,6 @@ public class JustBotApplication {
 	static final Logger log =
 			LoggerFactory.getLogger(JustBotApplication.class);
 
-
-
 	public static void main(String[] args) {
 		new Load().onLoad();
 		SpringApplication.run(JustBotApplication.class, args);

@@ -1,8 +1,9 @@
+token: ${DISCORD_TOKEN}
 spring:
   datasource:
-    url: jdbc:postgresql://93.170.76.21:5432/test_db
-    username: raft
-    password: 123456
+    url: jdbc:postgresql://${DATASOUCE_HOST:localhost}:5432/test_db
+    username: ${DATASOUCE_USER}
+    password: ${DATASOUCE_PASS}
   jpa:
     generate-ddl: false
     show-sql: true
