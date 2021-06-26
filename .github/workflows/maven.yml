@@ -23,16 +23,6 @@ jobs:
         distribution: 'adopt'
     - name: Build with Maven
       run: mvn -B package --file pom.xml
-    - name: scp pipelines
-      uses: cross-the-world/ssh-scp-ssh-pipelines@latest
-      with:
-        host: ${{ secrets.DC_HOST }}
-        user: ${{ secrets.DC_USER }}
-        pass: ${{ secrets.DC_PASS }}
-        scp: |
-         'JustBot/TestDir/*' => /root/discordtest
-        last_ssh: |
-          pkill -f JustBot.jar
     - uses: actions/upload-artifact@v2-preview
       with:
         name: JustBot
